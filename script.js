@@ -1989,20 +1989,10 @@ class Router {
             item.classList.remove('active');
         });
         
-        // Add active class to current route's sidebar item
-        const routeMap = {
-            'home': 'index.html',
-            'services': 'services.html',
-            'pricing': 'pricing.html',
-            'mission': 'mission.html',
-            'contact': 'contact.html'
-        };
-        
-        if (routeMap[route]) {
-            const activeItem = document.querySelector(`.sidebar-item[href*="${routeMap[route]}"]`);
-            if (activeItem) {
-                activeItem.classList.add('active');
-            }
+        // Add active class to current route's sidebar item using hash-based href
+        const activeItem = document.querySelector(`.sidebar-item[href="#/${route}"]`);
+        if (activeItem) {
+            activeItem.classList.add('active');
         }
     }
 
@@ -2329,7 +2319,14 @@ function initializeSidebar() {
                     // Prevent default and use router
                     link.addEventListener('click', (e) => {
                         e.preventDefault();
-                        router.navigate(route);
+                        
+                        // Ensure router exists before navigating
+                        if (typeof router !== 'undefined' && router) {
+                            router.navigate(route);
+                        } else {
+                            // Fallback: update hash directly
+                            window.location.hash = `#/${route}`;
+                        }
                         
                         // Close drawer on mobile after navigation
                         if (DEVICE.isMobile()) {
@@ -2352,10 +2349,12 @@ function initializeSidebar() {
 let router;
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialize sidebar first
+    // Initialize router first
+    router = new Router();
+    
+    // Initialize sidebar (which needs router to be available)
     initializeSidebar();
     
-    // Initialize and start router
-    router = new Router();
+    // Start router
     router.init();
 });
