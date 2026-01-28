@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Services - Auctus Studio</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div id="navbar-container"></div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Activity Bar -->
+        <div class="activity-bar">
+            <div class="activity-icons">
+                <div class="activity-icon active" data-view="search">
+                    <i class="fas fa-search"></i>
+                </div>
+                <div class="activity-icon" data-view="git">
+                    <i class="fas fa-code-branch"></i>
+                </div>
+                <div class="activity-icon" data-view="extensions">
+                    <i class="fas fa-th"></i>
+                </div>
+            </div>
+            <div class="activity-icons-bottom">
+                <div class="activity-icon">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="activity-icon">
+                    <i class="fas fa-cog"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Editor Area -->
+        <div class="editor-container">
+            <div class="tabs">
+                <div class="tab" data-file="home" onclick="window.location.href='index.html'">
+                    <span>Home</span>
+                </div>
+                <div class="tab active" data-file="services">
+                    <span>services.md</span>
+                    <i class="fas fa-times" onclick="event.stopPropagation(); sessionStorage.removeItem('servicesTabOpen'); window.location.href='index.html'"></i>
+                </div>
+                <!-- Pricing tab will be added dynamically if opened -->
+            </div>
+            <div class="editor-content services-page">
+                <!-- Hero Section -->
+                <div class="services-hero">
+                    <div class="hero-badge">
+                        <span class="badge-icon">✦</span>
+                        <span>Web Development</span>
+                    </div>
+                    <h1 class="page-title">
+                        <span class="title-line">We Build</span>
+                        <span class="title-line gradient-text">Digital Experiences</span>
+                    </h1>
+                    <p class="page-subtitle">From concept to launch, we craft custom websites that combine stunning design with powerful functionality.</p>
+                </div>
+
+                <!-- What We Do Section -->
+                <section class="services-section">
+                    <h2 class="section-header">
+                        <i class="fas fa-code"></i> What We Do
+                    </h2>
+                    
+                    <div class="service-cards">
+                        <div class="service-card">
+                            <div class="card-number">01</div>
+                            <h3>Websites</h3>
+                            <div class="card-features">
+                                <span class="feature-tag"><i class="fas fa-bolt"></i> Lightning Fast</span>
+                                <span class="feature-tag"><i class="fas fa-mobile-alt"></i> Mobile First</span>
+                                <span class="feature-tag"><i class="fas fa-paint-brush"></i> Pixel Perfect</span>
+                            </div>
+                            <p>Custom-built, responsive websites that captivate your audience and drive results. From elegant portfolios to powerful e-commerce platforms, we craft digital experiences that leave a lasting impression.</p>
+                        </div>
+
+                        <div class="service-card">
+                            <div class="card-number">02</div>
+                            <h3>Apps</h3>
+                            <div class="card-features">
+                                <span class="feature-tag"><i class="fas fa-rocket"></i> High Performance</span>
+                                <span class="feature-tag"><i class="fas fa-lock"></i> Secure & Stable</span>
+                                <span class="feature-tag"><i class="fas fa-lightbulb"></i> User Focused</span>
+                            </div>
+                            <p>Native and cross-platform applications that users love. We build intuitive mobile experiences that seamlessly integrate with your business goals and provide value at every touchpoint.</p>
+                        </div>
+
+                        <div class="service-card">
+                            <div class="card-number">03</div>
+                            <h3>AI Work Solutions</h3>
+                            <div class="card-features">
+                                <span class="feature-tag"><i class="fas fa-robot"></i> Smart Automation</span>
+                                <span class="feature-tag"><i class="fas fa-chart-line"></i> Data Driven</span>
+                                <span class="feature-tag"><i class="fas fa-cog"></i> Scalable</span>
+                            </div>
+                            <p>Intelligent automation and AI-powered tools that transform how you work. From chatbots to predictive analytics, we implement cutting-edge AI solutions that give your business a competitive edge.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Our Process Section -->
+                <section class="services-section">
+                    <h2 class="section-header">
+                        <i class="fas fa-layer-group"></i> Our Complete Process
+                    </h2>
+                    
+                    <div class="process-steps">
+                        <div class="process-step">
+                            <div class="step-icon">
+                                <i class="fas fa-pencil-ruler"></i>
+                            </div>
+                            <h3>Design & Develop</h3>
+                            <p>We start by designing a mockup of your website either by using your company's current themes, or creating a new design from scratch if you want. We then develop the website using modern technologies to ensure a seamless user experience. We keep you updated with a live preview throughout the process.</p>
+                        </div>
+
+                        <div class="process-step">
+                            <div class="step-icon">
+                                <i class="fas fa-server"></i>
+                            </div>
+                            <h3>Host & Maintain</h3>
+                            <p>Next, we provide reliable hosting solutions and ongoing maintenance to keep your website running smoothly. We set this system up to help you focus on your core business while we handle the technical details.</p>
+                        </div>
+
+                        <div class="process-step">
+                            <div class="step-icon">
+                                <i class="fas fa-rocket"></i>
+                            </div>
+                            <h3>Launch & Grow</h3>
+                            <p>Last step is launching your project and providing ongoing SEO to improve visibility and drive traffic. Our main goal is to help you succeed online. The better your website, the better our portfolio. We promise to make the best version of your project come to life.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Testimonials Section -->
+                <section class="services-section">
+                    <h2 class="section-header">
+                        <i class="fas fa-quote-left"></i> Client Success Stories
+                    </h2>
+                    
+                    <div class="testimonials">
+                        <div class="testimonial">
+                            <div class="testimonial-header">
+                                <div class="testimonial-avatar">SR</div>
+                                <div class="testimonial-info">
+                                    <h4>Stephan Roberts</h4>
+                                    <p>CEO, Global Windows</p>
+                                </div>
+                            </div>
+                            <p class="testimonial-quote">"Working with Auctus was a great experience. They took the time to understand our business and created a website that truly represents our brand. We've gotten great feedback from our customers."</p>
+                            <a href="https://globalwindowsllc.com/" target="_blank" class="testimonial-link">
+                                Visit Website <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+
+                        <div class="testimonial">
+                            <div class="testimonial-header">
+                                <div class="testimonial-avatar">SW</div>
+                                <div class="testimonial-info">
+                                    <h4>Seth Weaver</h4>
+                                    <p>Founder, Nightmare Racing</p>
+                                </div>
+                            </div>
+                            <p class="testimonial-quote">"The team was easy to work with and really nailed the design. They were patient with our revision requests and helped us launch a site we're proud to share with people."</p>
+                            <a href="https://nightmareracing.netlify.app/" target="_blank" class="testimonial-link">
+                                Visit Website <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+
+                        <div class="testimonial">
+                            <div class="testimonial-header">
+                                <div class="testimonial-avatar">JH</div>
+                                <div class="testimonial-info">
+                                    <h4>Jake Hall</h4>
+                                    <p>Founder, Redemption Renovations</p>
+                                </div>
+                            </div>
+                            <p class="testimonial-quote">"Great communication throughout the entire process. They delivered on time and were very responsive whenever we had questions. The site looks professional and works smoothly."</p>
+                            <a href="https://redemptionrenovations.netlify.app/" target="_blank" class="testimonial-link">
+                                Visit Website <i class="fas fa-external-link-alt"></i>
+                            </a>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- CTA Section -->
+                <section class="services-section cta-section-services">
+                    <div class="cta-box">
+                        <h2>Ready to Elevate Your Online Presence?</h2>
+                        <p>Let's create something extraordinary together.</p>
+                        <div class="cta-buttons">
+                            <button class="btn-primary">Start Your Project</button>
+                            <a href="index.html" class="btn-secondary">Back to Home</a>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+        <div class="status-left">
+            <span><i class="fas fa-code-branch"></i> main</span>
+            <span><i class="fas fa-file-code"></i> services.md</span>
+        </div>
+        <div class="status-right">
+            <span>Markdown</span>
+            <span>UTF-8</span>
+            <span><i class="fas fa-bell"></i></span>
+        </div>
+    </div>
+
+    <script>
+        // Load navbar
+        fetch('navbar.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('navbar-container').innerHTML = data;
+            });
+        
+        // Mark services tab as open
+        sessionStorage.setItem('servicesTabOpen', 'true');
+        
+        // Check if pricing tab should be displayed
+        if (sessionStorage.getItem('pricingTabOpen') === 'true') {
+            const tabsContainer = document.querySelector('.tabs');
+            const pricingTab = document.createElement('div');
+            pricingTab.className = 'tab';
+            pricingTab.setAttribute('data-file', 'pricing');
+            pricingTab.onclick = function() { window.location.href='pricing.html'; };
+            pricingTab.innerHTML = `
+                <span>pricing.md</span>
+                <i class="fas fa-times" onclick="event.stopPropagation(); sessionStorage.removeItem('pricingTabOpen'); this.parentElement.remove();"></i>
+            `;
+            tabsContainer.appendChild(pricingTab);
+        }
+        
+        // Check if mission tab should be displayed
+        if (sessionStorage.getItem('missionTabOpen') === 'true') {
+            const tabsContainer = document.querySelector('.tabs');
+            const missionTab = document.createElement('div');
+            missionTab.className = 'tab';
+            missionTab.setAttribute('data-file', 'mission');
+            missionTab.onclick = function() { window.location.href='mission.html'; };
+            missionTab.innerHTML = `
+                <span>mission.md</span>
+                <i class="fas fa-times" onclick="event.stopPropagation(); sessionStorage.removeItem('missionTabOpen'); this.parentElement.remove();"></i>
+            `;
+            tabsContainer.appendChild(missionTab);
+        }
+    </script>
+</body>
+</html>

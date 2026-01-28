@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing - Auctus Studio</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div id="navbar-container"></div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Activity Bar -->
+        <div class="activity-bar">
+            <div class="activity-icons">
+                <div class="activity-icon active" data-view="search">
+                    <i class="fas fa-search"></i>
+                </div>
+                <div class="activity-icon" data-view="git">
+                    <i class="fas fa-code-branch"></i>
+                </div>
+                <div class="activity-icon" data-view="extensions">
+                    <i class="fas fa-th"></i>
+                </div>
+            </div>
+            <div class="activity-icons-bottom">
+                <div class="activity-icon">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="activity-icon">
+                    <i class="fas fa-cog"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Editor Area -->
+        <div class="editor-container">
+            <div class="tabs">
+                <div class="tab" data-file="home" onclick="window.location.href='index.html'">
+                    <span>Home</span>
+                </div>
+                <!-- Services tab will be added dynamically if opened -->
+                <div class="tab active" data-file="pricing">
+                    <span>pricing.md</span>
+                    <i class="fas fa-times" onclick="event.stopPropagation(); sessionStorage.removeItem('pricingTabOpen'); window.location.href='index.html'"></i>
+                </div>
+            </div>
+            <div class="editor-content pricing-page">
+                <!-- Hero Section -->
+                <div class="pricing-hero">
+                    <h1 class="page-title">
+                        <span class="gradient-text">Transparent Pricing</span>
+                    </h1>
+                    <p class="page-subtitle">Choose the plan that fits your needs. No hidden fees, no surprises.</p>
+                    
+                    <!-- Toggle between Monthly and One-Time -->
+                    <div class="pricing-toggle">
+                        <button class="toggle-btn active" data-plan="monthly">
+                            <i class="fas fa-calendar-alt"></i> Monthly Subscription
+                        </button>
+                        <button class="toggle-btn" data-plan="onetime">
+                            <i class="fas fa-shopping-cart"></i> One-Time Purchase
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Monthly Subscription Plans -->
+                <div class="pricing-plans-container" id="monthly-plans">
+                    <div class="pricing-grid">
+                        <!-- Intro Plan -->
+                        <div class="pricing-card">
+                            <div class="plan-header">
+                                <h3>Intro Plan</h3>
+                                <div class="plan-price">
+                                    <span class="price">$25</span>
+                                    <span class="period">/month</span>
+                                </div>
+                                <p class="setup-fee">Setup: $50 <span class="setup-note">(replaces first month cost)</span></p>
+                            </div>
+                            <div class="plan-features">
+                                <div class="feature"><i class="fas fa-check"></i> 2 pages (Home, Contact)</div>
+                                <div class="feature"><i class="fas fa-check"></i> Mobile responsive design</div>
+                                <div class="feature"><i class="fas fa-check"></i> Contact form with email notifications</div>
+                                <div class="feature"><i class="fas fa-check"></i> Basic SEO setup</div>
+                                <div class="feature"><i class="fas fa-check"></i> Hosting & SSL certificate</div>
+                                <div class="feature"><i class="fas fa-check"></i> Monthly updates</div>
+                                <div class="feature"><i class="fas fa-check"></i> Email support</div>
+                            </div>
+                            <button class="plan-btn">Get Started</button>
+                        </div>
+
+                        <!-- Starter Plan -->
+                        <div class="pricing-card">
+                            <div class="plan-header">
+                                <h3>Starter Plan</h3>
+                                <div class="plan-price">
+                                    <span class="price">$100</span>
+                                    <span class="period">/month</span>
+                                </div>
+                                <p class="setup-fee">Setup: $150 <span class="setup-note">(replaces first month cost)</span></p>
+                            </div>
+                            <div class="plan-features">
+                                <div class="feature"><i class="fas fa-check"></i> 5 pages</div>
+                                <div class="feature"><i class="fas fa-check"></i> Mobile responsive design</div>
+                                <div class="feature"><i class="fas fa-check"></i> Contact form with email notifications</div>
+                                <div class="feature"><i class="fas fa-check"></i> Basic SEO setup</div>
+                                <div class="feature"><i class="fas fa-check"></i> Hosting & SSL certificate</div>
+                                <div class="feature"><i class="fas fa-check"></i> Monthly updates</div>
+                                <div class="feature"><i class="fas fa-check"></i> Email support</div>
+                                <div class="feature referral"><i class="fas fa-gift"></i> $100 referral bonus</div>
+                            </div>
+                            <button class="plan-btn">Get Started</button>
+                        </div>
+
+                        <!-- Professional Plan -->
+                        <div class="pricing-card featured">
+                            <div class="popular-badge">Popular</div>
+                            <div class="plan-header">
+                                <h3>Professional Plan</h3>
+                                <div class="plan-price">
+                                    <span class="price">$250</span>
+                                    <span class="period">/month</span>
+                                </div>
+                                <p class="setup-fee">Setup: $300 <span class="setup-note">(replaces first month cost)</span></p>
+                            </div>
+                            <div class="plan-features">
+                                <div class="feature"><i class="fas fa-check"></i> 7-10 pages</div>
+                                <div class="feature"><i class="fas fa-check"></i> Admin panel</div>
+                                <div class="feature"><i class="fas fa-check"></i> Photo/project gallery with upload</div>
+                                <div class="feature"><i class="fas fa-check"></i> Google Analytics integration</div>
+                                <div class="feature"><i class="fas fa-check"></i> Social media integration</div>
+                                <div class="feature"><i class="fas fa-check"></i> Priority email support</div>
+                                <div class="feature"><i class="fas fa-check"></i> 2 hours/month changes included</div>
+                                <div class="feature referral"><i class="fas fa-gift"></i> $250 referral bonus</div>
+                            </div>
+                            <button class="plan-btn primary">Get Started</button>
+                        </div>
+
+                        <!-- Premium Plan -->
+                        <div class="pricing-card">
+                            <div class="plan-header">
+                                <h3>Premium Plan</h3>
+                                <div class="plan-price">
+                                    <span class="price">$400</span>
+                                    <span class="period">/month</span>
+                                </div>
+                                <p class="setup-fee">Setup: $600 <span class="setup-note">(replaces first month cost)</span></p>
+                            </div>
+                            <div class="plan-features">
+                                <div class="feature"><i class="fas fa-check"></i> Unlimited pages</div>
+                                <div class="feature"><i class="fas fa-check"></i> Advanced features (booking, payments)</div>
+                                <div class="feature"><i class="fas fa-check"></i> Custom integrations (CRM, scheduling)</div>
+                                <div class="feature"><i class="fas fa-check"></i> Customer portals</div>
+                                <div class="feature"><i class="fas fa-check"></i> Monthly performance reports</div>
+                                <div class="feature"><i class="fas fa-check"></i> 5 hours/month changes included</div>
+                                <div class="feature"><i class="fas fa-check"></i> Phone support</div>
+                                <div class="feature"><i class="fas fa-check"></i> AI chatbot/receptionist available</div>
+                                <div class="feature referral"><i class="fas fa-gift"></i> $400 referral bonus</div>
+                            </div>
+                            <button class="plan-btn">Get Started</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- One-Time Purchase Plans -->
+                <div class="pricing-plans-container" id="onetime-plans" style="display: none;">
+                    <div class="pricing-grid">
+                        <!-- Basic Website -->
+                        <div class="pricing-card">
+                            <div class="plan-header">
+                                <h3>Basic Website</h3>
+                                <div class="plan-price">
+                                    <span class="price">$650</span>
+                                    <span class="period">one-time</span>
+                                </div>
+                            </div>
+                            <div class="plan-features">
+                                <div class="feature"><i class="fas fa-check"></i> 5 pages</div>
+                                <div class="feature"><i class="fas fa-check"></i> Contact form</div>
+                                <div class="feature"><i class="fas fa-check"></i> Mobile responsive</div>
+                                <div class="feature"><i class="fas fa-check"></i> Full ownership</div>
+                                <div class="feature"><i class="fas fa-check"></i> 30 days support after launch</div>
+                                <div class="feature"><i class="fas fa-info-circle"></i> Maintenance: $80/hr</div>
+                                <div class="feature referral"><i class="fas fa-gift"></i> $100 referral bonus</div>
+                            </div>
+                            <button class="plan-btn">Purchase Now</button>
+                        </div>
+
+                        <!-- Professional Website -->
+                        <div class="pricing-card featured">
+                            <div class="popular-badge">Popular</div>
+                            <div class="plan-header">
+                                <h3>Professional Website</h3>
+                                <div class="plan-price">
+                                    <span class="price">$1,250</span>
+                                    <span class="period">one-time</span>
+                                </div>
+                            </div>
+                            <div class="plan-features">
+                                <div class="feature"><i class="fas fa-check"></i> 7-10 pages</div>
+                                <div class="feature"><i class="fas fa-check"></i> Admin panel</div>
+                                <div class="feature"><i class="fas fa-check"></i> Photo/project gallery</div>
+                                <div class="feature"><i class="fas fa-check"></i> Full ownership</div>
+                                <div class="feature"><i class="fas fa-check"></i> 60 days support after launch</div>
+                                <div class="feature"><i class="fas fa-info-circle"></i> Maintenance: $80/hr</div>
+                                <div class="feature referral"><i class="fas fa-gift"></i> $250 referral bonus</div>
+                            </div>
+                            <button class="plan-btn primary">Purchase Now</button>
+                        </div>
+
+                        <!-- Premium Website -->
+                        <div class="pricing-card">
+                            <div class="plan-header">
+                                <h3>Premium Website</h3>
+                                <div class="plan-price">
+                                    <span class="price">$5,000+</span>
+                                    <span class="period">one-time</span>
+                                </div>
+                            </div>
+                            <div class="plan-features">
+                                <div class="feature"><i class="fas fa-check"></i> Custom features & integrations</div>
+                                <div class="feature"><i class="fas fa-check"></i> Unlimited pages</div>
+                                <div class="feature"><i class="fas fa-check"></i> Advanced functionality</div>
+                                <div class="feature"><i class="fas fa-check"></i> Full ownership</div>
+                                <div class="feature"><i class="fas fa-check"></i> 90 days support after launch</div>
+                                <div class="feature"><i class="fas fa-info-circle"></i> Maintenance: $80/hr</div>
+                                <div class="feature referral"><i class="fas fa-gift"></i> $500 referral bonus</div>
+                            </div>
+                            <button class="plan-btn">Contact Us</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Add-ons Section -->
+                <section class="addons-section">
+                    <h2 class="section-header">
+                        <i class="fas fa-puzzle-piece"></i> Add-ons & Extensions
+                    </h2>
+                    
+                    <div class="addons-grid">
+                        <div class="addon-category">
+                            <h3>One-Time Add-ons</h3>
+                            <div class="addon-list">
+                                <div class="addon-item">
+                                    <span class="addon-name">Additional pages</span>
+                                    <span class="addon-price">+$75/page</span>
+                                </div>
+                                <div class="addon-item">
+                                    <span class="addon-name">E-commerce functionality</span>
+                                    <span class="addon-price">+$1,000-2,500</span>
+                                </div>
+                                <div class="addon-item">
+                                    <span class="addon-name">Booking/scheduling system</span>
+                                    <span class="addon-price">+$800</span>
+                                </div>
+                                <div class="addon-item">
+                                    <span class="addon-name">Customer portal/login area</span>
+                                    <span class="addon-price">+$1,200</span>
+                                </div>
+                                <div class="addon-item">
+                                    <span class="addon-name">AI chatbot integration</span>
+                                    <span class="addon-price">+$600</span>
+                                </div>
+                                <div class="addon-item">
+                                    <span class="addon-name">Blog with CMS</span>
+                                    <span class="addon-price">+$400</span>
+                                </div>
+                                <div class="addon-item">
+                                    <span class="addon-name">Email marketing integration</span>
+                                    <span class="addon-price">+$300</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="addon-category">
+                            <h3>Monthly Add-ons</h3>
+                            <div class="addon-list">
+                                <div class="addon-item">
+                                    <span class="addon-name">E-commerce functionality</span>
+                                    <span class="addon-price">+$100/mo</span>
+                                </div>
+                                <div class="addon-item">
+                                    <span class="addon-name">Booking/scheduling system</span>
+                                    <span class="addon-price">+$75/mo</span>
+                                </div>
+                                <div class="addon-item">
+                                    <span class="addon-name">Customer portal</span>
+                                    <span class="addon-price">+$100/mo</span>
+                                </div>
+                                <div class="addon-item">
+                                    <span class="addon-name">AI chatbot</span>
+                                    <span class="addon-price">+$50/mo</span>
+                                </div>
+                                <div class="addon-item">
+                                    <span class="addon-name">Blog with CMS</span>
+                                    <span class="addon-price">+$40/mo</span>
+                                </div>
+                                <div class="addon-item">
+                                    <span class="addon-name">Email marketing integration</span>
+                                    <span class="addon-price">+$30/mo</span>
+                                </div>
+                                <div class="addon-item">
+                                    <span class="addon-name">SEO management</span>
+                                    <span class="addon-price">+$200/mo</span>
+                                </div>
+                                <div class="addon-item">
+                                    <span class="addon-name">Content updates</span>
+                                    <span class="addon-price">+$150/mo</span>
+                                </div>
+                                <div class="addon-item">
+                                    <span class="addon-name">Social media management</span>
+                                    <span class="addon-price">+$300/mo</span>
+                                </div>
+                                <div class="addon-item">
+                                    <span class="addon-name">AI phone receptionist</span>
+                                    <span class="addon-price">+$100/mo</span>
+                                </div>
+                                <div class="addon-item">
+                                    <span class="addon-name">Additional support (5 hours)</span>
+                                    <span class="addon-price">$300</span>
+                                </div>
+                                <div class="addon-item">
+                                    <span class="addon-name">Hourly support</span>
+                                    <span class="addon-price">$75/hr</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Referral Info -->
+                <section class="referral-info">
+                    <div class="info-box">
+                        <i class="fas fa-gift"></i>
+                        <h3>Referral Bonus Program</h3>
+                        <p>Earn referral bonuses when you refer a new paying client to us! Bonuses are paid when the new client makes their first payment, and must be within 60 days of your referral.</p>
+                    </div>
+                </section>
+
+                <!-- CTA Section -->
+                <section class="pricing-cta">
+                    <h2>Ready to Get Started?</h2>
+                    <p>Let's discuss which plan is right for your project</p>
+                    <button class="btn-primary">Contact Us Today</button>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+        <div class="status-left">
+            <span><i class="fas fa-code-branch"></i> main</span>
+            <span><i class="fas fa-file-code"></i> pricing.md</span>
+        </div>
+        <div class="status-right">
+            <span>Markdown</span>
+            <span>UTF-8</span>
+            <span><i class="fas fa-bell"></i></span>
+        </div>
+    </div>
+
+    <script>
+        // Load navbar
+        fetch('navbar.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('navbar-container').innerHTML = data;
+            });
+        
+        // Mark pricing tab as open
+        sessionStorage.setItem('pricingTabOpen', 'true');
+
+        // Check if services tab should be displayed
+        if (sessionStorage.getItem('servicesTabOpen') === 'true') {
+            const tabsContainer = document.querySelector('.tabs');
+            const servicesTab = document.createElement('div');
+            servicesTab.className = 'tab';
+            servicesTab.setAttribute('data-file', 'services');
+            servicesTab.onclick = function() { window.location.href='services.html'; };
+            servicesTab.innerHTML = `
+                <span>services.md</span>
+                <i class="fas fa-times" onclick="event.stopPropagation(); sessionStorage.removeItem('servicesTabOpen'); this.parentElement.remove();"></i>
+            `;
+            // Insert after home tab (before pricing tab)
+            const pricingTab = tabsContainer.querySelector('[data-file="pricing"]');
+            tabsContainer.insertBefore(servicesTab, pricingTab);
+        }
+        
+        // Check if mission tab should be displayed
+        if (sessionStorage.getItem('missionTabOpen') === 'true') {
+            const tabsContainer = document.querySelector('.tabs');
+            const missionTab = document.createElement('div');
+            missionTab.className = 'tab';
+            missionTab.setAttribute('data-file', 'mission');
+            missionTab.onclick = function() { window.location.href='mission.html'; };
+            missionTab.innerHTML = `
+                <span>mission.md</span>
+                <i class="fas fa-times" onclick="event.stopPropagation(); sessionStorage.removeItem('missionTabOpen'); this.parentElement.remove();"></i>
+            `;
+            tabsContainer.appendChild(missionTab);
+        }
+
+        // Toggle between monthly and one-time pricing
+        const toggleBtns = document.querySelectorAll('.toggle-btn');
+        const monthlyPlans = document.getElementById('monthly-plans');
+        const onetimePlans = document.getElementById('onetime-plans');
+
+        toggleBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                toggleBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                if (btn.dataset.plan === 'monthly') {
+                    monthlyPlans.style.display = 'block';
+                    onetimePlans.style.display = 'none';
+                } else {
+                    monthlyPlans.style.display = 'none';
+                    onetimePlans.style.display = 'block';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
