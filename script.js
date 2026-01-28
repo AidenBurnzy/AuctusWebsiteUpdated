@@ -684,6 +684,149 @@ const PAGES = {
         `
     },
     
+    signup: {
+        title: 'Sign Up',
+        icon: 'fa-user-plus',
+        filename: 'signup.html',
+        content: `
+            <div class="editor-content auth-page">
+                <div class="auth-container">
+                    <div class="auth-card">
+                        <div class="auth-header">
+                            <h1>Create Your Account</h1>
+                            <p>Join Auctus Studio for exclusive access to client portals and project updates</p>
+                        </div>
+
+                        <form class="auth-form" id="signupForm">
+                            <div class="form-group">
+                                <label for="signup-company">Company Name</label>
+                                <input type="text" id="signup-company" name="company" placeholder="Your Company" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="signup-email">Email Address</label>
+                                <input type="email" id="signup-email" name="email" placeholder="you@company.com" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="signup-password">Password</label>
+                                <input type="password" id="signup-password" name="password" placeholder="Enter a strong password" required>
+                                <small class="password-hint">At least 8 characters, with uppercase, lowercase, and numbers</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="signup-confirm">Confirm Password</label>
+                                <input type="password" id="signup-confirm" name="confirmPassword" placeholder="Confirm password" required>
+                            </div>
+
+                            <div class="form-group checkbox">
+                                <input type="checkbox" id="signup-terms" name="terms" required>
+                                <label for="signup-terms">I agree to the Terms of Service and Privacy Policy</label>
+                            </div>
+
+                            <button type="submit" class="auth-btn primary">
+                                <i class="fas fa-user-plus"></i> Create Account
+                            </button>
+
+                            <div class="auth-divider">
+                                <span>or</span>
+                            </div>
+
+                            <button type="button" class="auth-btn secondary" id="signup-login-switch">
+                                <i class="fas fa-sign-in-alt"></i> Sign In Instead
+                            </button>
+                        </form>
+
+                        <div class="auth-message" id="signup-message"></div>
+                    </div>
+
+                    <div class="auth-benefits">
+                        <div class="benefit-item">
+                            <i class="fas fa-shield-alt"></i>
+                            <h3>Secure & Private</h3>
+                            <p>Enterprise-grade security for your project data</p>
+                        </div>
+                        <div class="benefit-item">
+                            <i class="fas fa-clock"></i>
+                            <h3>24/7 Access</h3>
+                            <p>Track projects anytime, anywhere</p>
+                        </div>
+                        <div class="benefit-item">
+                            <i class="fas fa-bell"></i>
+                            <h3>Real-Time Updates</h3>
+                            <p>Get instant notifications on project progress</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `
+    },
+
+    login: {
+        title: 'Sign In',
+        icon: 'fa-sign-in-alt',
+        filename: 'login.html',
+        content: `
+            <div class="editor-content auth-page">
+                <div class="auth-container">
+                    <div class="auth-card">
+                        <div class="auth-header">
+                            <h1>Welcome Back</h1>
+                            <p>Sign in to access your project portal and updates</p>
+                        </div>
+
+                        <form class="auth-form" id="loginForm">
+                            <div class="form-group">
+                                <label for="login-email">Email Address</label>
+                                <input type="email" id="login-email" name="email" placeholder="you@company.com" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="login-password">Password</label>
+                                <input type="password" id="login-password" name="password" placeholder="Enter your password" required>
+                            </div>
+
+                            <div class="form-options">
+                                <label class="remember-me">
+                                    <input type="checkbox" name="remember" id="login-remember">
+                                    <span>Remember me</span>
+                                </label>
+                                <a href="#/contact" class="forgot-password">Forgot password?</a>
+                            </div>
+
+                            <button type="submit" class="auth-btn primary">
+                                <i class="fas fa-sign-in-alt"></i> Sign In
+                            </button>
+
+                            <div class="auth-divider">
+                                <span>or</span>
+                            </div>
+
+                            <button type="button" class="auth-btn secondary" id="login-signup-switch">
+                                <i class="fas fa-user-plus"></i> Create New Account
+                            </button>
+                        </form>
+
+                        <div class="auth-message" id="login-message"></div>
+                    </div>
+
+                    <div class="auth-info">
+                        <div class="info-card">
+                            <i class="fas fa-star"></i>
+                            <h3>Client Portal</h3>
+                            <p>Access your dedicated project portal with real-time updates, file sharing, and direct communication with your Auctus team.</p>
+                        </div>
+                        <div class="info-card">
+                            <i class="fas fa-headset"></i>
+                            <h3>Dedicated Support</h3>
+                            <p>Get priority support from our team. We're here to help you succeed with your project.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `
+    },
+
     contact: {
         title: 'Contact',
         icon: 'fa-envelope',
@@ -888,6 +1031,253 @@ const PAGES = {
                             <p class="insight-body">We stay embedded with your team to optimize, adapt, and extend capabilities long after launch.</p>
                         </article>
                     </section>
+                </div>
+            </div>
+        `
+    },
+
+    login: {
+        title: 'Login',
+        icon: 'fa-sign-in-alt',
+        filename: 'login.html',
+        content: `
+            <div class="editor-content">
+                <div class="auth-page login-page">
+                    <!-- Auth Container -->
+                    <div class="auth-container">
+                        <!-- Left Section - Branding -->
+                        <div class="auth-left-section">
+                            <div class="auth-logo">
+                                <i class="fas fa-rocket"></i>
+                            </div>
+                            <h1 class="auth-brand-title">Auctus Studio</h1>
+                            <p class="auth-brand-subtitle">AI-Powered Web Design & Development</p>
+                            <div class="auth-features">
+                                <div class="auth-feature">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>Breakthrough AI Integration</span>
+                                </div>
+                                <div class="auth-feature">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>Immersive Design Tools</span>
+                                </div>
+                                <div class="auth-feature">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>Complete Automation</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Section - Login Form -->
+                        <div class="auth-right-section">
+                            <div class="auth-form-wrapper">
+                                <h2 class="auth-form-title">Welcome Back</h2>
+                                <p class="auth-form-subtitle">Sign in to your Auctus Studio account</p>
+
+                                <form class="auth-form" id="loginForm">
+                                    <!-- Email Field -->
+                                    <div class="form-group">
+                                        <label for="login-email" class="form-label">Email Address</label>
+                                        <input
+                                            type="email"
+                                            id="login-email"
+                                            name="email"
+                                            class="form-input"
+                                            placeholder="you@example.com"
+                                            required
+                                        />
+                                    </div>
+
+                                    <!-- Password Field -->
+                                    <div class="form-group">
+                                        <label for="login-password" class="form-label">Password</label>
+                                        <input
+                                            type="password"
+                                            id="login-password"
+                                            name="password"
+                                            class="form-input"
+                                            placeholder="••••••••"
+                                            required
+                                        />
+                                    </div>
+
+                                    <!-- Remember & Forgot Links -->
+                                    <div class="form-options">
+                                        <label class="remember-checkbox">
+                                            <input type="checkbox" id="login-remember" name="remember" />
+                                            <span>Remember me</span>
+                                        </label>
+                                        <a href="#/forgot-password" class="forgot-link">Forgot password?</a>
+                                    </div>
+
+                                    <!-- Message Display -->
+                                    <div id="login-message"></div>
+
+                                    <!-- Login Button -->
+                                    <button type="submit" class="auth-button primary">
+                                        <i class="fas fa-sign-in-alt"></i> Sign In
+                                    </button>
+                                </form>
+
+                                <!-- Divider -->
+                                <div class="auth-divider">
+                                    <span>or continue with</span>
+                                </div>
+
+                                <!-- OAuth Options -->
+                                <div class="oauth-buttons">
+                                    <button class="oauth-button google">
+                                        <i class="fab fa-google"></i>
+                                        <span>Google</span>
+                                    </button>
+                                    <button class="oauth-button github">
+                                        <i class="fab fa-github"></i>
+                                        <span>GitHub</span>
+                                    </button>
+                                </div>
+
+                                <!-- Sign Up Link -->
+                                <div class="auth-footer">
+                                    <p>Don't have an account? <a href="#/signup" class="auth-link">Create one</a></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `
+    },
+
+    signup: {
+        title: 'Create Account',
+        icon: 'fa-user-plus',
+        filename: 'signup.html',
+        content: `
+            <div class="editor-content">
+                <div class="auth-page signup-page">
+                    <!-- Auth Container -->
+                    <div class="auth-container">
+                        <!-- Left Section - Branding -->
+                        <div class="auth-left-section">
+                            <div class="auth-logo">
+                                <i class="fas fa-rocket"></i>
+                            </div>
+                            <h1 class="auth-brand-title">Auctus Studio</h1>
+                            <p class="auth-brand-subtitle">AI-Powered Web Design & Development</p>
+                            <div class="auth-features">
+                                <div class="auth-feature">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>Breakthrough AI Integration</span>
+                                </div>
+                                <div class="auth-feature">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>Immersive Design Tools</span>
+                                </div>
+                                <div class="auth-feature">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>Complete Automation</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Section - Signup Form -->
+                        <div class="auth-right-section">
+                            <div class="auth-form-wrapper">
+                                <h2 class="auth-form-title">Create Your Account</h2>
+                                <p class="auth-form-subtitle">Join Auctus Studio and start building amazing projects</p>
+
+                                <form class="auth-form" id="signupForm">
+                                    <!-- Email Field -->
+                                    <div class="form-group">
+                                        <label for="signup-email" class="form-label">Email Address</label>
+                                        <input
+                                            type="email"
+                                            id="signup-email"
+                                            name="email"
+                                            class="form-input"
+                                            placeholder="you@example.com"
+                                            required
+                                        />
+                                    </div>
+
+                                    <!-- Company Field -->
+                                    <div class="form-group">
+                                        <label for="signup-company" class="form-label">Company (Optional)</label>
+                                        <input
+                                            type="text"
+                                            id="signup-company"
+                                            name="company"
+                                            class="form-input"
+                                            placeholder="Your company name"
+                                        />
+                                    </div>
+
+                                    <!-- Password Field -->
+                                    <div class="form-group">
+                                        <label for="signup-password" class="form-label">Password</label>
+                                        <input
+                                            type="password"
+                                            id="signup-password"
+                                            name="password"
+                                            class="form-input"
+                                            placeholder="••••••••"
+                                            required
+                                        />
+                                        <small class="password-hint">At least 8 characters</small>
+                                    </div>
+
+                                    <!-- Confirm Password Field -->
+                                    <div class="form-group">
+                                        <label for="signup-confirm" class="form-label">Confirm Password</label>
+                                        <input
+                                            type="password"
+                                            id="signup-confirm"
+                                            name="confirm_password"
+                                            class="form-input"
+                                            placeholder="••••••••"
+                                            required
+                                        />
+                                    </div>
+
+                                    <!-- Terms Checkbox -->
+                                    <label class="terms-checkbox">
+                                        <input type="checkbox" id="signup-terms" name="terms" required />
+                                        <span>I agree to the <a href="#/terms" class="inline-link">Terms of Service</a> and <a href="#/privacy" class="inline-link">Privacy Policy</a></span>
+                                    </label>
+
+                                    <!-- Message Display -->
+                                    <div id="signup-message"></div>
+
+                                    <!-- Sign Up Button -->
+                                    <button type="submit" class="auth-button primary">
+                                        <i class="fas fa-user-plus"></i> Create Account
+                                    </button>
+                                </form>
+
+                                <!-- Divider -->
+                                <div class="auth-divider">
+                                    <span>or sign up with</span>
+                                </div>
+
+                                <!-- OAuth Options -->
+                                <div class="oauth-buttons">
+                                    <button class="oauth-button google">
+                                        <i class="fab fa-google"></i>
+                                        <span>Google</span>
+                                    </button>
+                                    <button class="oauth-button github">
+                                        <i class="fab fa-github"></i>
+                                        <span>GitHub</span>
+                                    </button>
+                                </div>
+
+                                <!-- Sign In Link -->
+                                <div class="auth-footer">
+                                    <p>Already have an account? <a href="#/login" class="auth-link">Sign in</a></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         `
@@ -2105,7 +2495,188 @@ const PAGE_INIT = {
                 serviceSelect.value = plan;
             }
         }
+    },
+
+    login: () => {
+        const form = document.getElementById('loginForm');
+        const messageDiv = document.getElementById('login-message');
+        const loginToSignupBtn = document.getElementById('login-signup-switch');
+
+        if (loginToSignupBtn) {
+            loginToSignupBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                router.navigate('signup');
+            });
+        }
+
+        if (form) {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const email = document.getElementById('login-email').value;
+                const password = document.getElementById('login-password').value;
+                const remember = document.getElementById('login-remember').checked;
+
+                // Show loading state
+                const submitBtn = form.querySelector('button[type="submit"]');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing in...';
+                submitBtn.disabled = true;
+
+                try {
+                    // Call your backend API (adjust URL as needed)
+                    const response = await fetch('http://localhost:3000/api/auth/login', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ email, password })
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok && data.accessToken) {
+                        // Store tokens
+                        localStorage.setItem('accessToken', data.accessToken);
+                        localStorage.setItem('refreshToken', data.refreshToken);
+                        
+                        if (remember) {
+                            localStorage.setItem('rememberMe', 'true');
+                        }
+
+                        // Show success message
+                        messageDiv.className = 'auth-message success';
+                        messageDiv.innerHTML = '<i class="fas fa-check-circle"></i> Welcome back! Redirecting...';
+
+                        // Redirect after 1.5 seconds
+                        setTimeout(() => {
+                            router.navigate('home');
+                        }, 1500);
+                    } else {
+                        // Show error message
+                        messageDiv.className = 'auth-message error';
+                        messageDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${data.message || 'Invalid email or password'}`;
+                        
+                        // Reset button
+                        submitBtn.innerHTML = originalText;
+                        submitBtn.disabled = false;
+                    }
+                } catch (error) {
+                    messageDiv.className = 'auth-message error';
+                    messageDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> Connection error. Please try again.`;
+                    
+                    // Reset button
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                    
+                    console.error('Login error:', error);
+                }
+            });
+        }
+    },
+
+    signup: () => {
+        const form = document.getElementById('signupForm');
+        const messageDiv = document.getElementById('signup-message');
+        const signupToLoginBtn = document.getElementById('signup-login-switch');
+
+        if (signupToLoginBtn) {
+            signupToLoginBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                router.navigate('login');
+            });
+        }
+
+        if (form) {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const company = document.getElementById('signup-company').value;
+                const email = document.getElementById('signup-email').value;
+                const password = document.getElementById('signup-password').value;
+                const confirmPassword = document.getElementById('signup-confirm').value;
+                const termsAccepted = document.getElementById('signup-terms').checked;
+
+                // Validation
+                if (password !== confirmPassword) {
+                    messageDiv.className = 'auth-message error';
+                    messageDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> Passwords do not match';
+                    return;
+                }
+
+                if (password.length < 8) {
+                    messageDiv.className = 'auth-message error';
+                    messageDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> Password must be at least 8 characters';
+                    return;
+                }
+
+                if (!termsAccepted) {
+                    messageDiv.className = 'auth-message error';
+                    messageDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> Please accept the terms and conditions';
+                    return;
+                }
+
+                // Show loading state
+                const submitBtn = form.querySelector('button[type="submit"]');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating account...';
+                submitBtn.disabled = true;
+
+                try {
+                    // Call your backend API
+                    const response = await fetch('http://localhost:3000/api/website-integration/register', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ 
+                            email, 
+                            clientName: company, 
+                            password,
+                            confirmPassword 
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        // If registration includes tokens, store them
+                        if (data.accessToken) {
+                            localStorage.setItem('accessToken', data.accessToken);
+                            localStorage.setItem('refreshToken', data.refreshToken);
+                        }
+
+                        // Show success message
+                        messageDiv.className = 'auth-message success';
+                        messageDiv.innerHTML = '<i class="fas fa-check-circle"></i> Account created successfully! Redirecting...';
+
+                        // Redirect after 1.5 seconds
+                        setTimeout(() => {
+                            router.navigate('home');
+                        }, 1500);
+                    } else {
+                        // Show error message
+                        messageDiv.className = 'auth-message error';
+                        messageDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${data.message || 'Sign up failed. Please try again.'}`;
+                        
+                        // Reset button
+                        submitBtn.innerHTML = originalText;
+                        submitBtn.disabled = false;
+                    }
+                } catch (error) {
+                    messageDiv.className = 'auth-message error';
+                    messageDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> Connection error. Please try again.`;
+                    
+                    // Reset button
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                    
+                    console.error('Signup error:', error);
+                }
+            });
+        }
     }
+
 };
 
 // ===================================================================
@@ -2225,7 +2796,23 @@ function initializeSidebar() {
                 icon.addEventListener('click', () => {
                     const view = icon.getAttribute('data-view');
                     
-                    // Handle non-explorer icons - just switch active state, don't touch sidebar
+                    // Handle account icon - navigate to login page
+                    if (view === 'account') {
+                        if (typeof router !== 'undefined' && router) {
+                            router.navigate('login');
+                        } else {
+                            window.location.hash = '#/login';
+                        }
+                        // Close drawer on mobile after navigation
+                        if (DEVICE.isMobile()) {
+                            sidebar.classList.remove('visible');
+                            document.body.classList.remove('sidebar-open');
+                            sessionStorage.setItem('sidebarOpen', 'false');
+                        }
+                        return;
+                    }
+                    
+                    // Handle non-explorer, non-account icons - just switch active state, don't touch sidebar
                     if (view !== 'explorer') {
                         activityIcons.forEach(i => i.classList.remove('active'));
                         icon.classList.add('active');

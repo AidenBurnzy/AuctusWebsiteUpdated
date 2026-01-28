@@ -1,0 +1,128 @@
+<!-- Create Account Page -->
+<div class="editor-content">
+    <div class="auth-page signup-page">
+        <!-- Auth Container -->
+        <div class="auth-container">
+            <!-- Left Section - Branding -->
+            <div class="auth-left-section">
+                <div class="auth-logo">
+                    <i class="fas fa-rocket"></i>
+                </div>
+                <h1 class="auth-brand-title">Auctus Studio</h1>
+                <p class="auth-brand-subtitle">AI-Powered Web Design & Development</p>
+                <div class="auth-features">
+                    <div class="auth-feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Breakthrough AI Integration</span>
+                    </div>
+                    <div class="auth-feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Immersive Design Tools</span>
+                    </div>
+                    <div class="auth-feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Complete Automation</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Section - Signup Form -->
+            <div class="auth-right-section">
+                <div class="auth-form-wrapper">
+                    <h2 class="auth-form-title">Create Your Account</h2>
+                    <p class="auth-form-subtitle">Join Auctus Studio and start building amazing projects</p>
+
+                    <form class="auth-form" id="signupForm">
+                        <!-- Email Field -->
+                        <div class="form-group">
+                            <label for="signup-email" class="form-label">Email Address</label>
+                            <input
+                                type="email"
+                                id="signup-email"
+                                name="email"
+                                class="form-input"
+                                placeholder="you@example.com"
+                                required
+                            />
+                        </div>
+
+                        <!-- Company Field -->
+                        <div class="form-group">
+                            <label for="signup-company" class="form-label">Company (Optional)</label>
+                            <input
+                                type="text"
+                                id="signup-company"
+                                name="company"
+                                class="form-input"
+                                placeholder="Your company name"
+                            />
+                        </div>
+
+                        <!-- Password Field -->
+                        <div class="form-group">
+                            <label for="signup-password" class="form-label">Password</label>
+                            <input
+                                type="password"
+                                id="signup-password"
+                                name="password"
+                                class="form-input"
+                                placeholder="••••••••"
+                                required
+                            />
+                            <small class="password-hint">At least 8 characters</small>
+                        </div>
+
+                        <!-- Confirm Password Field -->
+                        <div class="form-group">
+                            <label for="signup-confirm" class="form-label">Confirm Password</label>
+                            <input
+                                type="password"
+                                id="signup-confirm"
+                                name="confirm_password"
+                                class="form-input"
+                                placeholder="••••••••"
+                                required
+                            />
+                        </div>
+
+                        <!-- Terms Checkbox -->
+                        <label class="terms-checkbox">
+                            <input type="checkbox" id="signup-terms" name="terms" required />
+                            <span>I agree to the <a href="#/terms" class="inline-link">Terms of Service</a> and <a href="#/privacy" class="inline-link">Privacy Policy</a></span>
+                        </label>
+
+                        <!-- Message Display -->
+                        <div id="signup-message"></div>
+
+                        <!-- Sign Up Button -->
+                        <button type="submit" class="auth-button primary">
+                            <i class="fas fa-user-plus"></i> Create Account
+                        </button>
+                    </form>
+
+                    <!-- Divider -->
+                    <div class="auth-divider">
+                        <span>or sign up with</span>
+                    </div>
+
+                    <!-- OAuth Options -->
+                    <div class="oauth-buttons">
+                        <button class="oauth-button google">
+                            <i class="fab fa-google"></i>
+                            <span>Google</span>
+                        </button>
+                        <button class="oauth-button github">
+                            <i class="fab fa-github"></i>
+                            <span>GitHub</span>
+                        </button>
+                    </div>
+
+                    <!-- Sign In Link -->
+                    <div class="auth-footer">
+                        <p>Already have an account? <a href="#/login" class="auth-link">Sign in</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
