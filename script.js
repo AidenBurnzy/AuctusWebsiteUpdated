@@ -25,18 +25,16 @@ const PAGES = {
                         <p class="hero-subtitle">AI-Powered Web Design & Development</p>
                         <p class="hero-description">Transform your vision into a stunning web presence. We blend breakthrough AI, immersive design, and precise automation to create websites that drive results.</p>
                         
-                        <div class="hero-buttons">
-                            <a href="#/contact" class="cta-button primary">
-                                <i class="fas fa-rocket"></i> Get Started
-                            </a>
-                            <a href="#signin" class="cta-button secondary">
-                                <i class="fas fa-sign-in-alt"></i> Sign In
-                            </a>
+                        <div class="hero-buttons" id="home-hero-buttons">
+                            <!-- Buttons populated by JavaScript -->
                         </div>
                     </div>
                     
                     <div class="version-info">
                         <p>Auctus Studio v1.0.0 - Built for creators, by creators</p>
+                        <button id="reset-tutorial-btn" style="margin-top: 12px; padding: 6px 12px; font-size: 12px; background: rgba(139, 92, 246, 0.2); border: 1px solid rgba(139, 92, 246, 0.4); color: #a78bfa; border-radius: 4px; cursor: pointer; transition: all 0.2s ease;">
+                            ↻ Reset Tutorial
+                        </button>
                     </div>
                 </div>
             </div>
@@ -897,6 +895,756 @@ const PAGES = {
 };
 
 // ===================================================================
+// TUTORIAL SYSTEM
+// First-time user onboarding with interactive overlays
+// ===================================================================
+
+const TutorialManager = {
+    isFirstVisit: !localStorage.getItem('auctus_first_visit_complete'),
+    isTutorialActive: false,
+    currentStep: 0,
+    currentTarget: null,
+    currentTargetListener: null,
+    currentNextBtnListener: null,
+    currentPrevBtnListener: null,
+    
+    steps: [
+        {
+            title: 'Explorer',
+            text: 'This is where all your pages are. Click here to explore different sections',
+            target: '.activity-icon[data-view="explorer"]',
+            position: 'right'
+        },
+        {
+            title: 'Profile & Sign In',
+            text: 'Sign up or sign into your account to access personalized features',
+            target: '.activity-icon[data-view="account"]',
+            position: 'right'
+        }
+    ],
+    
+    renderButtons: function() {
+        const container = document.getElementById('home-hero-buttons');
+        if (!container) return;
+        
+        if (!localStorage.getItem('auctus_tutorial_completed')) {
+            container.innerHTML = `
+                <button id="tutorial-start-btn" class="cta-button primary">
+                    <i class="fas fa-rocket"></i> Get Started
+                </button>
+            `;
+            document.getElementById('tutorial-start-btn').addEventListener('click', () => this.start());
+        } else {
+            // Clean minimalist page - no buttons after tutorial
+            container.innerHTML = '';
+        }
+    },
+    
+    openExplorer: function() {
+        const sidebar = document.getElementById('sidebar');
+        if (sidebar) {
+            sidebar.classList.add('visible');
+            document.body.classList.add('sidebar-open');
+            sessionStorage.setItem('sidebarOpen', 'true');
+        }
+    },
+    
+    start: function() {
+        this.isTutorialActive = true;
+        this.currentStep = 0;
+        this.showStep();
+    },
+    
+    showStep: function() {
+        console.log('showStep called, currentStep:', this.currentStep, 'stepsLength:', this.steps.length);
+        if (this.currentStep >= this.steps.length) {
+            console.log('currentStep >= steps.length, calling complete()');
+            this.complete();
+            return;
+        }
+        
+        const step = this.steps[this.currentStep];
+        const isMobile = window.innerWidth < 768;
+        console.log('Showing step:', this.currentStep, 'isMobile:', isMobile, 'target:', step.target);
+        
+        // Function to get target and display tutorial
+        const displayTutorial = () => {
+            let target;
+            let needsMenuOpen = false;
+            
+            // On mobile, use different targets
+            if (isMobile) {
+                if (step.target === '.activity-icon[data-view="explorer"]') {
+                    // First step: highlight hamburger menu
+                    target = document.querySelector('#mobile-menu-btn');
+                    needsMenuOpen = true;
+                } else if (step.target === '.activity-icon[data-view="account"]') {
+                    // Second step: highlight the mobile profile button in sidebar
+                    target = document.querySelector('#mobile-profile-btn');
+                } else {
+                    target = document.querySelector(step.target);
+                }
+            } else {
+                target = document.querySelector(step.target);
+            }
+            
+            if (!target) {
+                console.warn('Tutorial: Target not found for step', this.currentStep, 'selector:', step.target, 'isMobile:', isMobile);
+                // If we can't find any target, complete the tutorial to prevent getting stuck
+                if (this.currentStep >= this.steps.length - 1) {
+                    console.warn('Tutorial: Cannot find last step target, completing tutorial');
+                    this.complete();
+                } else {
+                    // Skip this step
+                    this.nextStep();
+                }
+                return;
+            }
+            
+            // Remove previous tutorial elements if they exist
+            const existingOverlay = document.getElementById('tutorial-overlay');
+            if (existingOverlay) existingOverlay.remove();
+            
+            const existingTooltip = document.getElementById('tutorial-tooltip');
+            if (existingTooltip) existingTooltip.remove();
+            
+            const existingHighlight = document.getElementById('tutorial-highlight');
+            if (existingHighlight) existingHighlight.remove();
+            
+            // Reset z-index on previously highlighted elements
+            const elementsWithHighZ = document.querySelectorAll('[style*="z-index: 10001"]');
+            elementsWithHighZ.forEach(el => {
+                el.style.zIndex = '';
+                el.style.pointerEvents = '';
+                if (!el.getAttribute('style')) el.removeAttribute('style');
+            });
+            
+            this.showHighlightAndTooltip(step, target, isMobile, needsMenuOpen);
+        };
+        
+        // On mobile second step, make sure menu is open and wait for DOM to be ready
+        if (isMobile && step.target === '.activity-icon[data-view="account"]') {
+            const sidebar = document.getElementById('sidebar');
+            if (!sidebar.classList.contains('visible')) {
+                const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+                if (mobileMenuBtn) {
+                    mobileMenuBtn.click();
+                    // Wait for menu animation to complete
+                    setTimeout(displayTutorial.bind(this), 600);
+                    return;
+                }
+            } else {
+                // Menu is already open, check if profile button exists
+                const profileBtn = document.querySelector('#mobile-profile-btn');
+                if (!profileBtn) {
+                    console.warn('Tutorial: Profile button not found, waiting for sidebar to load');
+                    setTimeout(displayTutorial.bind(this), 300);
+                    return;
+                }
+                // No delay needed - sidebar is already visible
+                displayTutorial.call(this);
+                return;
+            }
+        }
+        
+        displayTutorial.call(this);
+    },
+    
+    showHighlightAndTooltip: function(step, target, isMobile, needsMenuOpen) {
+        const self = this;
+        
+        // Remove any existing tutorial elements to prevent duplicate listeners
+        const existingOverlay = document.getElementById('tutorial-overlay');
+        if (existingOverlay) existingOverlay.remove();
+        const existingTooltip = document.getElementById('tutorial-tooltip');
+        if (existingTooltip) existingTooltip.remove();
+        const existingHighlight = document.getElementById('tutorial-highlight');
+        if (existingHighlight) existingHighlight.remove();
+        
+        // Remove old event listeners from previous target
+        if (this.currentTarget && this.currentTargetListener) {
+            this.currentTarget.removeEventListener('click', this.currentTargetListener);
+        }
+        
+        // Create overlay
+        const overlay = document.createElement('div');
+        overlay.id = 'tutorial-overlay';
+        overlay.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 9998;
+            pointer-events: none;
+        `;
+        document.body.appendChild(overlay);
+        
+        // Highlight target element
+        const rect = target.getBoundingClientRect();
+        const highlightDiv = document.createElement('div');
+        highlightDiv.id = 'tutorial-highlight';
+        highlightDiv.style.cssText = `
+            position: fixed;
+            top: ${rect.top - 8}px;
+            left: ${rect.left - 8}px;
+            width: ${rect.width + 16}px;
+            height: ${rect.height + 16}px;
+            border: 3px solid #00d4ff;
+            border-radius: 8px;
+            z-index: 9999;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        `;
+        document.body.appendChild(highlightDiv);
+        
+        // Make target element interactive and above overlay
+        target.style.position = 'relative';
+        target.style.zIndex = '10001';
+        
+        // On the last step, make the target non-clickable (only Done button works)
+        if (this.currentStep === this.steps.length - 1) {
+            target.style.pointerEvents = 'none';
+        }
+        
+        // Create tooltip
+        const tooltip = document.createElement('div');
+        tooltip.id = 'tutorial-tooltip';
+        const maxWidth = isMobile ? 'calc(100vw - 40px)' : '300px';
+        tooltip.style.cssText = `
+            position: fixed;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            max-width: ${maxWidth};
+            z-index: 10000;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            color: var(--text-primary);
+        `;
+        
+        tooltip.innerHTML = `
+            <h3 style="margin: 0 0 10px 0; font-size: 16px; color: var(--text-primary);">${step.title}</h3>
+            <p style="margin: 0 0 15px 0; font-size: 14px; opacity: 0.9; color: var(--text-secondary);">${step.text}</p>
+            <div class="tutorial-button-group" style="display: flex; gap: 10px; flex-direction: ${isMobile ? 'column' : 'row'};">
+                ${this.currentStep > 0 ? `<button id="tutorial-prev" class="cta-button" style="flex: 1; padding: 10px; font-size: ${isMobile ? '14px' : '12px'};">← Back</button>` : ''}
+                <button id="tutorial-next" class="cta-button primary" style="flex: 1; padding: 10px; font-size: ${isMobile ? '14px' : '12px'};">${this.currentStep === this.steps.length - 1 ? 'Done ✓' : 'Next →'}</button>
+            </div>
+        `;
+        
+        document.body.appendChild(tooltip);
+        
+        // Position tooltip - mobile-friendly positioning
+        setTimeout(() => {
+            const tooltipRect = tooltip.getBoundingClientRect();
+            let top, left;
+            const padding = 20;
+            
+            if (isMobile) {
+                // On mobile, prefer below the element with fallback to above
+                if (rect.bottom + tooltipRect.height + padding < window.innerHeight) {
+                    top = rect.bottom + padding;
+                } else if (rect.top - tooltipRect.height - padding > 0) {
+                    top = rect.top - tooltipRect.height - padding;
+                } else {
+                    // Center vertically as last resort
+                    top = window.innerHeight / 2 - tooltipRect.height / 2;
+                }
+                
+                // Center horizontally on mobile with padding
+                left = Math.max(padding, window.innerWidth / 2 - tooltipRect.width / 2);
+                left = Math.min(left, window.innerWidth - tooltipRect.width - padding);
+            } else {
+                // Desktop positioning
+                top = rect.top - tooltipRect.height - padding;
+                left = rect.left + rect.width / 2 - tooltipRect.width / 2;
+                
+                if (top < padding) {
+                    top = rect.bottom + padding;
+                }
+                
+                if (left < padding) {
+                    left = padding;
+                } else if (left + tooltipRect.width > window.innerWidth - padding) {
+                    left = window.innerWidth - tooltipRect.width - padding;
+                }
+            }
+            
+            tooltip.style.top = top + 'px';
+            tooltip.style.left = left + 'px';
+        }, 0);
+        
+        // Attach button listeners with proper 'this' binding
+        const nextBtn = document.getElementById('tutorial-next');
+        if (nextBtn) {
+            nextBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                console.log('Next button clicked! currentStep=', self.currentStep, 'steps.length=', self.steps.length, 'isLastStep=', self.currentStep === self.steps.length - 1);
+                
+                // On last step, button says "Done ✓" and should complete tutorial
+                if (self.currentStep === self.steps.length - 1) {
+                    console.log('Calling complete() from Done button');
+                    self.complete();
+                    return;
+                }
+                
+                // If on first step of mobile, wait for menu to open before advancing
+                if (needsMenuOpen && !document.getElementById('sidebar').classList.contains('visible')) {
+                    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+                    if (mobileMenuBtn) {
+                        // Set flag to prevent the hamburger's click listener from auto-advancing
+                        self.isClickingFromNextButton = true;
+                        mobileMenuBtn.click();
+                        // Wait for menu animation (250ms + small buffer), then advance manually
+                        setTimeout(() => {
+                            self.isClickingFromNextButton = false;
+                            self.nextStep();
+                        }, 300);
+                        return;
+                    }
+                }
+                self.nextStep();
+            });
+        }
+        
+        const prevBtn = document.getElementById('tutorial-prev');
+        if (prevBtn) {
+            prevBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                self.prevStep();
+            });
+        }
+        
+        // Allow clicking the highlighted element to advance tutorial (but not on last step)
+        console.log('Checking if should add click listener: currentStep=', this.currentStep, 'steps.length=', this.steps.length, 'condition result:', this.currentStep < this.steps.length - 1);
+        if (this.currentStep < this.steps.length - 1) {
+            console.log('Adding click listener to target');
+            // Store listener function reference so it can be removed later
+            this.currentTargetListener = function(e) {
+                console.log('Target clicked! currentStep=', self.currentStep, 'isFromNextButton=', self.isClickingFromNextButton);
+                
+                // If this click came from the Next button, don't auto-advance (Next button handles it)
+                if (self.isClickingFromNextButton) {
+                    self.isClickingFromNextButton = false;
+                    return;
+                }
+                
+                // On the last step, prevent any default action and don't auto-advance
+                if (self.currentStep === self.steps.length - 1) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return;
+                }
+                
+                // For earlier steps, allow auto-advance
+                // For menu button on mobile first step, let it open and advance
+                if (needsMenuOpen) {
+                    // Don't prevent default - let menu open
+                    self.nextStep();
+                } else {
+                    // For other elements, prevent default if not a link or button
+                    if (target.tagName !== 'A' && target.tagName !== 'BUTTON') {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }
+                    self.nextStep();
+                }
+            };
+            target.addEventListener('click', this.currentTargetListener);
+            this.currentTarget = target;
+        } else {
+            // On last step, clear the stored references
+            this.currentTarget = null;
+            this.currentTargetListener = null;
+        }
+    },
+    
+    nextStep: function() {
+        console.log('nextStep called, currentStep before increment:', this.currentStep);
+        console.trace('nextStep stack trace');
+        // Remove tutorial elements immediately for instant transition
+        try {
+            this.currentStep++;
+            this.showStep();
+        } catch (error) {
+            console.error('Tutorial error:', error);
+            this.forceCleanup();
+        }
+    },
+    
+    prevStep: function() {
+        // Add fade-out animation before transitioning
+        const overlay = document.getElementById('tutorial-overlay');
+        const tooltip = document.getElementById('tutorial-tooltip');
+        const highlight = document.getElementById('tutorial-highlight');
+        
+        if (overlay) overlay.classList.add('fade-out');
+        if (tooltip) tooltip.classList.add('fade-out');
+        
+        setTimeout(() => {
+            if (this.currentStep > 0) {
+                this.currentStep--;
+                
+                // If going back to step 0 on mobile, close the sidebar
+                const isMobile = window.innerWidth < 768;
+                if (isMobile && this.currentStep === 0) {
+                    const sidebar = document.getElementById('sidebar');
+                    if (sidebar && sidebar.classList.contains('visible')) {
+                        sidebar.classList.remove('visible');
+                    }
+                }
+                
+                this.showStep();
+            }
+        }, 300);
+    },
+    
+    complete: function() {
+        console.log('complete() called, currentStep:', this.currentStep);
+        console.trace('Stack trace for complete()');
+        
+        // Remove event listeners from current target immediately
+        if (this.currentTarget && this.currentTargetListener) {
+            this.currentTarget.removeEventListener('click', this.currentTargetListener);
+            this.currentTarget = null;
+            this.currentTargetListener = null;
+        }
+        
+        // Mark as inactive immediately
+        this.isTutorialActive = false;
+        localStorage.setItem('auctus_tutorial_completed', 'true');
+        localStorage.setItem('auctus_first_visit_complete', 'true');
+        
+        // Close the mobile sidebar immediately
+        const sidebar = document.getElementById('sidebar');
+        if (sidebar && sidebar.classList.contains('visible')) {
+            sidebar.classList.remove('visible');
+        }
+        
+        // Remove sidebar-open class from body to hide the black overlay
+        document.body.classList.remove('sidebar-open');
+        
+        // Clean up - remove all tutorial elements immediately (including any duplicates)
+        document.querySelectorAll('#tutorial-overlay').forEach(el => el.remove());
+        document.querySelectorAll('#tutorial-tooltip').forEach(el => el.remove());
+        document.querySelectorAll('#tutorial-highlight').forEach(el => el.remove());
+        
+        // Reset z-index on highlighted elements
+        const elementsWithHighZ = document.querySelectorAll('[style*="z-index: 10001"]');
+        elementsWithHighZ.forEach(el => {
+            el.style.zIndex = '';
+            el.style.pointerEvents = '';
+            if (!el.getAttribute('style')) el.removeAttribute('style');
+        });
+        
+        // Re-render buttons
+        this.renderButtons();
+    },
+    
+    forceCleanup: function() {
+        // Emergency cleanup function to remove all tutorial elements
+        const overlay = document.getElementById('tutorial-overlay');
+        const tooltip = document.getElementById('tutorial-tooltip');
+        const highlight = document.getElementById('tutorial-highlight');
+        
+        if (overlay) overlay.remove();
+        if (tooltip) tooltip.remove();
+        if (highlight) highlight.remove();
+        
+        // Reset z-index on all elements
+        document.querySelectorAll('[style*="z-index"]').forEach(el => {
+            if (el.style.zIndex === '10001') {
+                el.style.zIndex = '';
+                el.style.pointerEvents = '';
+                if (!el.getAttribute('style')) el.removeAttribute('style');
+            }
+        });
+        
+        this.isTutorialActive = false;
+    }
+};
+
+// ===================================================================
+// PARTICLE BACKGROUND ANIMATION
+// Minimalist animated particles with mouse interaction
+// ===================================================================
+
+const ParticleBackground = {
+    canvas: null,
+    ctx: null,
+    particles: [],
+    floatingElements: [],
+    mouse: { x: null, y: null, radius: 200 },
+    animationId: null,
+    
+    init: function() {
+        this.canvas = document.getElementById('particle-canvas');
+        if (!this.canvas) return;
+        
+        this.ctx = this.canvas.getContext('2d');
+        this.resize();
+        this.createParticles();
+        this.createFloatingElements();
+        this.animate();
+        
+        // Event listeners - track mouse on entire document
+        window.addEventListener('resize', () => this.handleResize());
+        document.addEventListener('mousemove', (e) => this.handleMouseMove(e));
+        document.addEventListener('mouseleave', () => {
+            this.mouse.x = null;
+            this.mouse.y = null;
+        });
+    },
+    
+    createFloatingElements: function() {
+        this.floatingElements = [];
+        // Create 2-3 floating elements that move around
+        const numElements = 2 + Math.floor(Math.random());
+        const minDistance = 200; // Minimum distance between elements
+        
+        for (let i = 0; i < numElements; i++) {
+            let x, y, validPosition;
+            
+            // Keep generating random positions until we find one far enough from others
+            do {
+                validPosition = true;
+                x = Math.random() * this.canvas.width;
+                y = Math.random() * this.canvas.height;
+                
+                // Check distance to all existing elements
+                for (let j = 0; j < this.floatingElements.length; j++) {
+                    const dx = x - this.floatingElements[j].x;
+                    const dy = y - this.floatingElements[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < minDistance) {
+                        validPosition = false;
+                        break;
+                    }
+                }
+            } while (!validPosition);
+            
+            this.floatingElements.push({
+                x: x,
+                y: y,
+                vx: (Math.random() - 0.5) * 0.5,
+                vy: (Math.random() - 0.5) * 0.5,
+                radius: 40 + Math.random() * 30,
+                influence: 150,
+                type: Math.random() > 0.5 ? 'attractor' : 'repeller'
+            });
+        }
+    },
+    
+    resize: function() {
+        if (!this.canvas) return;
+        const container = this.canvas.parentElement;
+        this.canvas.width = container.clientWidth;
+        this.canvas.height = container.clientHeight;
+    },
+    
+    handleResize: function() {
+        if (!this.canvas) return;
+        
+        // Store old dimensions
+        const oldWidth = this.canvas.width;
+        const oldHeight = this.canvas.height;
+        
+        // Get new dimensions
+        const container = this.canvas.parentElement;
+        const newWidth = container.clientWidth;
+        const newHeight = container.clientHeight;
+        
+        // Calculate scale factors
+        const scaleX = newWidth / oldWidth;
+        const scaleY = newHeight / oldHeight;
+        
+        // Scale all particle and element positions proportionally
+        this.particles.forEach(particle => {
+            particle.x *= scaleX;
+            particle.y *= scaleY;
+        });
+        
+        this.floatingElements.forEach(element => {
+            element.x *= scaleX;
+            element.y *= scaleY;
+        });
+        
+        // Now update canvas dimensions
+        this.canvas.width = newWidth;
+        this.canvas.height = newHeight;
+    },
+    
+    createParticles: function() {
+        this.particles = [];
+        const numberOfParticles = Math.floor((this.canvas.width * this.canvas.height) / 15000);
+        
+        for (let i = 0; i < numberOfParticles; i++) {
+            this.particles.push({
+                x: Math.random() * this.canvas.width,
+                y: Math.random() * this.canvas.height,
+                vx: (Math.random() - 0.5) * 0.5,
+                vy: (Math.random() - 0.5) * 0.5,
+                radius: Math.random() * 2 + 1
+            });
+        }
+    },
+    
+    handleMouseMove: function(e) {
+        if (!this.canvas || !this.canvas.classList.contains('active')) {
+            this.mouse.x = null;
+            this.mouse.y = null;
+            return;
+        }
+        const rect = this.canvas.getBoundingClientRect();
+        this.mouse.x = e.clientX - rect.left;
+        this.mouse.y = e.clientY - rect.top;
+    },
+    
+    animate: function() {
+        if (!this.ctx || !this.canvas) return;
+        
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        
+        // Update and animate floating elements
+        this.floatingElements.forEach(element => {
+            // Add subtle wandering motion
+            element.vx += (Math.random() - 0.5) * 0.01;
+            element.vy += (Math.random() - 0.5) * 0.01;
+            
+            // Limit speed
+            const speed = Math.sqrt(element.vx * element.vx + element.vy * element.vy);
+            if (speed > 0.5) {
+                element.vx = (element.vx / speed) * 0.5;
+                element.vy = (element.vy / speed) * 0.5;
+            }
+            
+            // Move element
+            element.x += element.vx;
+            element.y += element.vy;
+            
+            // Bounce off edges
+            if (element.x - element.radius < 0 || element.x + element.radius > this.canvas.width) {
+                element.vx *= -1;
+                element.x = Math.max(element.radius, Math.min(this.canvas.width - element.radius, element.x));
+            }
+            if (element.y - element.radius < 0 || element.y + element.radius > this.canvas.height) {
+                element.vy *= -1;
+                element.y = Math.max(element.radius, Math.min(this.canvas.height - element.radius, element.y));
+            }
+        });
+        
+        // Update and draw particles
+        this.particles.forEach(particle => {
+            // Mouse interaction - gentle attraction
+            if (this.mouse.x !== null && this.mouse.y !== null) {
+                const dx = this.mouse.x - particle.x;
+                const dy = this.mouse.y - particle.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < this.mouse.radius) {
+                    const force = (this.mouse.radius - distance) / this.mouse.radius;
+                    particle.vx += (dx / distance) * force * 0.12;
+                    particle.vy += (dy / distance) * force * 0.12;
+                }
+            }
+            
+            // Floating element interaction
+            this.floatingElements.forEach(element => {
+                const dx = element.x - particle.x;
+                const dy = element.y - particle.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < element.influence) {
+                    const force = (element.influence - distance) / element.influence;
+                    if (element.type === 'attractor') {
+                        particle.vx += (dx / distance) * force * 0.08;
+                        particle.vy += (dy / distance) * force * 0.08;
+                    } else {
+                        // Repeller
+                        particle.vx -= (dx / distance) * force * 0.08;
+                        particle.vy -= (dy / distance) * force * 0.08;
+                    }
+                }
+            });
+            
+            // Move particle
+            particle.x += particle.vx;
+            particle.y += particle.vy;
+            
+            // Damping
+            particle.vx *= 0.96;
+            particle.vy *= 0.96;
+            
+            // Bounce off edges
+            if (particle.x < 0 || particle.x > this.canvas.width) {
+                particle.vx *= -1;
+                particle.x = Math.max(0, Math.min(this.canvas.width, particle.x));
+            }
+            if (particle.y < 0 || particle.y > this.canvas.height) {
+                particle.vy *= -1;
+                particle.y = Math.max(0, Math.min(this.canvas.height, particle.y));
+            }
+            
+            // Draw particle
+            this.ctx.fillStyle = 'rgba(139, 92, 246, 0.6)';
+            this.ctx.beginPath();
+            this.ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
+            this.ctx.fill();
+        });
+        
+        // Draw floating elements
+        this.floatingElements.forEach(element => {
+            // Draw element circle - purple and transparent
+            this.ctx.fillStyle = 'rgba(139, 92, 246, 0.08)';
+            this.ctx.beginPath();
+            this.ctx.arc(element.x, element.y, element.radius, 0, Math.PI * 2);
+            this.ctx.fill();
+            
+            // Draw element border - purple and transparent
+            this.ctx.strokeStyle = 'rgba(139, 92, 246, 0.15)';
+            this.ctx.lineWidth = 1.5;
+            this.ctx.stroke();
+        });
+        
+        // Draw connections
+        this.particles.forEach((p1, i) => {
+            this.particles.slice(i + 1).forEach(p2 => {
+                const dx = p1.x - p2.x;
+                const dy = p1.y - p2.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < 120) {
+                    const opacity = (1 - distance / 120) * 0.3;
+                    this.ctx.strokeStyle = `rgba(139, 92, 246, ${opacity})`;
+                    this.ctx.lineWidth = 0.5;
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(p1.x, p1.y);
+                    this.ctx.lineTo(p2.x, p2.y);
+                    this.ctx.stroke();
+                }
+            });
+        });
+        
+        this.animationId = requestAnimationFrame(() => this.animate());
+    },
+    
+    stop: function() {
+        if (this.animationId) {
+            cancelAnimationFrame(this.animationId);
+            this.animationId = null;
+        }
+        if (this.ctx && this.canvas) {
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        }
+    }
+};
+
+// ===================================================================
 // ROUTER CLASS
 // Handles navigation, content injection, and state management
 // ===================================================================
@@ -951,9 +1699,30 @@ class Router {
         // Highlight active sidebar item
         this.highlightActiveSidebarItem(route);
         
+        // Update mobile page title
+        this.updateMobileTitle(route);
+        
         // Call page initializer if exists
         if (PAGE_INIT[route]) {
             PAGE_INIT[route]();
+        }
+        
+        // Control particle background visibility
+        const canvas = document.getElementById('particle-canvas');
+        if (canvas) {
+            if (route === 'home') {
+                canvas.classList.add('active');
+            } else {
+                canvas.classList.remove('active');
+                ParticleBackground.stop();
+            }
+        }
+    }
+    
+    updateMobileTitle(route) {
+        const mobileTitle = document.querySelector('.mobile-page-title');
+        if (mobileTitle && PAGES[route]) {
+            mobileTitle.textContent = PAGES[route].filename;
         }
     }
 
@@ -967,7 +1736,7 @@ class Router {
             const tab = document.createElement('div');
             tab.className = `tab${route === this.currentRoute ? ' active' : ''}`;
             tab.setAttribute('data-file', route);
-            tab.setAttribute('draggable', 'true');
+            tab.setAttribute('draggable', DEVICE.isDesktop());
             tab.setAttribute('data-index', index);
             
             tab.innerHTML = `
@@ -992,17 +1761,97 @@ class Router {
                 });
             }
             
-            // Drag and drop handlers
-            tab.addEventListener('dragstart', (e) => this.handleDragStart(e, route, index));
-            tab.addEventListener('dragover', (e) => this.handleDragOver(e));
-            tab.addEventListener('dragenter', (e) => this.handleDragEnter(e));
-            tab.addEventListener('dragleave', (e) => this.handleDragLeave(e));
-            tab.addEventListener('drop', (e) => this.handleDrop(e, route, index));
-            tab.addEventListener('dragend', (e) => this.handleDragEnd(e));
+            // Desktop drag and drop handlers
+            if (DEVICE.isDesktop()) {
+                tab.addEventListener('dragstart', (e) => this.handleDragStart(e, route, index));
+                tab.addEventListener('dragover', (e) => this.handleDragOver(e));
+                tab.addEventListener('dragenter', (e) => this.handleDragEnter(e));
+                tab.addEventListener('dragleave', (e) => this.handleDragLeave(e));
+                tab.addEventListener('drop', (e) => this.handleDrop(e, route, index));
+                tab.addEventListener('dragend', (e) => this.handleDragEnd(e));
+            }
+            
+            // Mobile long-press context menu for tab management
+            if (DEVICE.isTouchDevice()) {
+                let touchStartTime = 0;
+                
+                tab.addEventListener('touchstart', (e) => {
+                    touchStartTime = Date.now();
+                });
+                
+                tab.addEventListener('touchend', (e) => {
+                    const touchDuration = Date.now() - touchStartTime;
+                    if (touchDuration > 500 && route !== 'home') {
+                        e.preventDefault();
+                        this.showTabContextMenu(e, route);
+                    }
+                });
+                
+                tab.addEventListener('contextmenu', (e) => {
+                    e.preventDefault();
+                    if (route !== 'home') {
+                        this.showTabContextMenu(e, route);
+                    }
+                });
+            }
             
             this.tabsContainer.appendChild(tab);
         });
     }
+
+    showTabContextMenu(e, route) {
+        // Remove existing context menu if present
+        const existing = document.querySelector('.tab-context-menu');
+        if (existing) existing.remove();
+        
+        const menu = document.createElement('div');
+        menu.className = 'tab-context-menu';
+        menu.innerHTML = `
+            <button class="context-menu-item close-tab">
+                <i class="fas fa-times"></i> Close Tab
+            </button>
+            <button class="context-menu-item close-other-tabs">
+                <i class="fas fa-times-circle"></i> Close Others
+            </button>
+        `;
+        
+        document.body.appendChild(menu);
+        
+        // Position menu at touch point
+        const clientX = e.clientX || e.touches?.[0].clientX || 0;
+        const clientY = e.clientY || e.touches?.[0].clientY || 0;
+        menu.style.top = clientY + 'px';
+        menu.style.left = clientX + 'px';
+        
+        // Close tab handler
+        menu.querySelector('.close-tab').addEventListener('click', () => {
+            this.closeTab(route);
+            menu.remove();
+        });
+        
+        // Close others handler
+        menu.querySelector('.close-other-tabs').addEventListener('click', () => {
+            this.openTabs.forEach(r => {
+                if (r !== 'home' && r !== route) {
+                    this.openTabs = this.openTabs.filter(t => t !== r);
+                }
+            });
+            sessionStorage.setItem('openTabs', JSON.stringify(this.openTabs));
+            this.updateTabs();
+            menu.remove();
+        });
+        
+        // Close menu when clicking elsewhere
+        const closeMenu = () => {
+            menu.remove();
+            document.removeEventListener('click', closeMenu);
+        };
+        
+        setTimeout(() => {
+            document.addEventListener('click', closeMenu);
+        }, 100);
+    }
+
 
     handleDragStart(e, route, index) {
         this.draggedTab = { route, index };
@@ -1178,6 +2027,41 @@ class Router {
 // ===================================================================
 
 const PAGE_INIT = {
+    home: () => {
+        // Initialize particle background
+        ParticleBackground.init();
+        
+        // Render tutorial buttons based on completion state
+        TutorialManager.renderButtons();
+        
+        // Add reset tutorial button handler
+        const resetBtn = document.getElementById('reset-tutorial-btn');
+        if (resetBtn) {
+            resetBtn.addEventListener('click', () => {
+                if (confirm('Reset the tutorial? You\'ll see "Get Started" on next page load.')) {
+                    localStorage.removeItem('auctus_tutorial_completed');
+                    localStorage.removeItem('auctus_first_visit_complete');
+                    sessionStorage.setItem('sidebarOpen', 'false');
+                    TutorialManager.renderButtons();
+                    resetBtn.style.opacity = '0.5';
+                    setTimeout(() => {
+                        resetBtn.style.opacity = '1';
+                    }, 300);
+                }
+            });
+            
+            // Add hover effect
+            resetBtn.addEventListener('mouseover', () => {
+                resetBtn.style.background = 'rgba(139, 92, 246, 0.3)';
+                resetBtn.style.borderColor = 'rgba(139, 92, 246, 0.6)';
+            });
+            resetBtn.addEventListener('mouseout', () => {
+                resetBtn.style.background = 'rgba(139, 92, 246, 0.2)';
+                resetBtn.style.borderColor = 'rgba(139, 92, 246, 0.4)';
+            });
+        }
+    },
+    
     pricing: () => {
         // Pricing toggle functionality
         const toggleBtns = document.querySelectorAll('.toggle-btn');
@@ -1239,7 +2123,40 @@ const PAGE_INIT = {
 // Handles sidebar loading, collapse, and activity icon interactions
 // ===================================================================
 
+// ===================================================================
+// RESPONSIVE DESIGN UTILITIES
+// Device detection and mobile-specific helpers
+// ===================================================================
+
+const DEVICE = {
+    isTouchDevice: () => {
+        return (('ontouchstart' in window) ||
+                (navigator.maxTouchPoints > 0) ||
+                (navigator.msMaxTouchPoints > 0));
+    },
+    
+    isMobile: () => {
+        return window.innerWidth < 768;
+    },
+    
+    isTablet: () => {
+        return window.innerWidth >= 768 && window.innerWidth < 1024;
+    },
+    
+    isDesktop: () => {
+        return window.innerWidth >= 1024;
+    }
+};
+
 function initializeSidebar() {
+    // Get mobile menu button (exists in main HTML, not navbar.html)
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    
+    // On first visit, start with explorer closed
+    if (TutorialManager.isFirstVisit && !sessionStorage.getItem('sidebarOpen')) {
+        sessionStorage.setItem('sidebarOpen', 'false');
+    }
+    
     fetch('navbar.html')
         .then(response => response.text())
         .then(data => {
@@ -1247,6 +2164,7 @@ function initializeSidebar() {
             
             // Get elements
             const sidebarCollapseBtn = document.getElementById('sidebar-collapse-btn');
+            const sidebarCloseBtn = document.getElementById('sidebar-close-btn');
             const sidebar = document.getElementById('sidebar');
             const activityIcons = document.querySelectorAll('.activity-icon[data-view]');
             
@@ -1256,13 +2174,59 @@ function initializeSidebar() {
             // Restore sidebar state from sessionStorage
             const sidebarOpen = sessionStorage.getItem('sidebarOpen') !== 'false';
             if (!sidebarOpen && sidebar) {
-                sidebar.classList.add('hidden');
+                if (DEVICE.isMobile()) {
+                    sidebar.classList.remove('visible');
+                    document.body.classList.remove('sidebar-open');
+                } else {
+                    sidebar.classList.add('hidden');
+                }
             } else if (sidebarOpen) {
+                if (DEVICE.isMobile()) {
+                    sidebar.classList.add('visible');
+                    document.body.classList.add('sidebar-open');
+                } else {
+                    sidebar.classList.remove('hidden');
+                }
                 // Restore active icon when sidebar is open
                 const currentViewIcon = document.querySelector(`.activity-icon[data-view="${currentActiveView}"]`);
                 if (currentViewIcon) {
                     currentViewIcon.classList.add('active');
                 }
+            }
+            
+            // Mobile menu button handler
+            if (mobileMenuBtn) {
+                mobileMenuBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    sidebar.classList.add('visible');
+                    document.body.classList.add('sidebar-open');
+                    sessionStorage.setItem('sidebarOpen', 'true');
+                });
+            }
+            
+            // Mobile close button handler
+            if (sidebarCloseBtn) {
+                sidebarCloseBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    sidebar.classList.remove('visible');
+                    document.body.classList.remove('sidebar-open');
+                    sessionStorage.setItem('sidebarOpen', 'false');
+                });
+            }
+            
+            // Mobile drawer overlay handler
+            if (DEVICE.isMobile() && sidebar) {
+                // Add click handler to body overlay to close drawer
+                document.body.addEventListener('click', (e) => {
+                    if (document.body.classList.contains('sidebar-open') && 
+                        !sidebar.contains(e.target) && 
+                        !e.target.closest('.activity-icon[data-view="explorer"]')) {
+                        sidebar.classList.remove('visible');
+                        document.body.classList.remove('sidebar-open');
+                        sessionStorage.setItem('sidebarOpen', 'false');
+                        activityIcons.forEach(i => i.classList.remove('active'));
+                    }
+                });
             }
             
             // Activity icon click handlers
@@ -1280,27 +2244,46 @@ function initializeSidebar() {
                     }
                     
                     // Explorer icon behavior
-                    const sidebarIsOpen = !sidebar.classList.contains('hidden');
+                    const isSidebarVisible = sidebar.classList.contains('visible') || !sidebar.classList.contains('hidden');
                     const clickedActiveIcon = currentActiveView === view;
                     
-                    if (clickedActiveIcon && sidebarIsOpen) {
-                        sidebar.classList.add('hidden');
-                        sessionStorage.setItem('sidebarOpen', 'false');
-                        activityIcons.forEach(i => i.classList.remove('active'));
-                    } else if (clickedActiveIcon && !sidebarIsOpen) {
-                        sidebar.classList.remove('hidden');
-                        sessionStorage.setItem('sidebarOpen', 'true');
-                        icon.classList.add('active');
+                    // Mobile drawer behavior
+                    if (DEVICE.isMobile()) {
+                        if (clickedActiveIcon && isSidebarVisible) {
+                            sidebar.classList.remove('visible');
+                            document.body.classList.remove('sidebar-open');
+                            sessionStorage.setItem('sidebarOpen', 'false');
+                            activityIcons.forEach(i => i.classList.remove('active'));
+                        } else {
+                            sidebar.classList.add('visible');
+                            document.body.classList.add('sidebar-open');
+                            sessionStorage.setItem('sidebarOpen', 'true');
+                            icon.classList.add('active');
+                            currentActiveView = view;
+                            sessionStorage.setItem('currentActiveView', view);
+                        }
                     } else {
-                        // Clicking explorer when another view is active - open sidebar
-                        if (!sidebarIsOpen) {
+                        // Desktop collapse behavior
+                        const sidebarIsOpen = !sidebar.classList.contains('hidden');
+                        
+                        if (clickedActiveIcon && sidebarIsOpen) {
+                            sidebar.classList.add('hidden');
+                            sessionStorage.setItem('sidebarOpen', 'false');
+                            activityIcons.forEach(i => i.classList.remove('active'));
+                        } else if (clickedActiveIcon && !sidebarIsOpen) {
                             sidebar.classList.remove('hidden');
                             sessionStorage.setItem('sidebarOpen', 'true');
+                            icon.classList.add('active');
+                        } else {
+                            if (!sidebarIsOpen) {
+                                sidebar.classList.remove('hidden');
+                                sessionStorage.setItem('sidebarOpen', 'true');
+                            }
+                            activityIcons.forEach(i => i.classList.remove('active'));
+                            icon.classList.add('active');
+                            currentActiveView = view;
+                            sessionStorage.setItem('currentActiveView', view);
                         }
-                        activityIcons.forEach(i => i.classList.remove('active'));
-                        icon.classList.add('active');
-                        currentActiveView = view;
-                        sessionStorage.setItem('currentActiveView', view);
                     }
                 });
             });
@@ -1328,35 +2311,38 @@ function initializeSidebar() {
             const sidebarLinks = sidebar.querySelectorAll('.sidebar-item[href]');
             sidebarLinks.forEach(link => {
                 const href = link.getAttribute('href');
-                if (href && !href.startsWith('#')) {
-                    const route = href.replace('.html', '').replace('index', 'home');
-                    link.setAttribute('href', `#/${route}`);
+                if (href) {
+                    let route;
+                    
+                    if (href.startsWith('#/')) {
+                        // Already a hash route, extract the route name
+                        route = href.substring(2);
+                    } else if (!href.startsWith('#')) {
+                        // Convert .html to hash route
+                        route = href.replace('.html', '').replace('index', 'home');
+                        link.setAttribute('href', `#/${route}`);
+                    } else {
+                        // Other hash links, skip
+                        return;
+                    }
                     
                     // Prevent default and use router
                     link.addEventListener('click', (e) => {
                         e.preventDefault();
                         router.navigate(route);
+                        
+                        // Close drawer on mobile after navigation
+                        if (DEVICE.isMobile()) {
+                            sidebar.classList.remove('visible');
+                            document.body.classList.remove('sidebar-open');
+                            sessionStorage.setItem('sidebarOpen', 'false');
+                        }
                     });
                 }
             });
-
-            // More menu toggle
-            const moreBtn = document.querySelector('.more-btn');
-            const moreMenu = document.querySelector('.more-menu');
-            
-            if (moreBtn && moreMenu) {
-                moreBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    moreMenu.classList.toggle('show');
-                });
-                
-                // Close menu when clicking outside
-                document.addEventListener('click', () => {
-                    moreMenu.classList.remove('show');
-                });
-            }
         });
 }
+
 
 // ===================================================================
 // INITIALIZATION

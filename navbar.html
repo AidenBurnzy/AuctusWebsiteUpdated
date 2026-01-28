@@ -3,6 +3,9 @@
     <!-- Sidebar Header -->
     <div class="sidebar-header">
         <span class="sidebar-title">EXPLORER</span>
+        <button class="sidebar-close-btn" id="sidebar-close-btn" title="Close Menu">
+            <i class="fas fa-times"></i>
+        </button>
         <button class="sidebar-collapse-btn" id="sidebar-collapse-btn" title="Collapse Sidebar">
             <i class="fas fa-chevron-left"></i>
         </button>
@@ -37,38 +40,20 @@
 
     <!-- Sidebar Bottom -->
     <div class="sidebar-bottom">
-        <!-- Contact Links -->
+        <!-- Profile Button (Mobile) -->
         <div class="sidebar-section-bottom">
-            <a href="mailto:founder.auctusventures@gmail.com" class="sidebar-item sidebar-icon-only" title="Email Us">
+            <a href="#/profile" class="sidebar-item" id="mobile-profile-btn" title="Profile & Account" data-view="account">
+                <i class="fas fa-user"></i>
+                <span class="sidebar-item-label">Profile</span>
+            </a>
+            <a href="#/contact" class="sidebar-item sidebar-icon-only" title="Email Us">
                 <i class="fas fa-envelope"></i>
                 <span class="sidebar-item-label">Email</span>
             </a>
-            <a href="tel:+16162686297" class="sidebar-item sidebar-icon-only" title="Call Us">
+            <a href="#/contact" class="sidebar-item sidebar-icon-only" title="Call Us">
                 <i class="fas fa-phone"></i>
                 <span class="sidebar-item-label">Call</span>
             </a>
-        </div>
-
-        <!-- More Menu -->
-        <div class="sidebar-more-container">
-            <button class="sidebar-item sidebar-more-btn" id="sidebar-more-btn" title="More Options">
-                <i class="fas fa-ellipsis-h"></i>
-                <span class="sidebar-item-label">More</span>
-            </button>
-            <div class="sidebar-more-menu" id="sidebar-more-menu">
-                <a href="#" class="sidebar-more-item" onclick="if(document.fullscreenElement){document.exitFullscreen();}else{document.documentElement.requestFullscreen();} return false;">
-                    <i class="fas fa-expand"></i>
-                    <span>Toggle Fullscreen</span>
-                </a>
-                <a href="#" class="sidebar-more-item" onclick="document.body.style.zoom = parseFloat(document.body.style.zoom || 1) + 0.1; return false;">
-                    <i class="fas fa-search-plus"></i>
-                    <span>Zoom In</span>
-                </a>
-                <a href="#" class="sidebar-more-item" onclick="document.body.style.zoom = parseFloat(document.body.style.zoom || 1) - 0.1; return false;">
-                    <i class="fas fa-search-minus"></i>
-                    <span>Zoom Out</span>
-                </a>
-            </div>
         </div>
     </div>
 </div>

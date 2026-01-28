@@ -9,26 +9,32 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+    <!-- Mobile Header (visible only on mobile) -->
+    <div class="mobile-header">
+        <button class="mobile-menu-btn" id="mobile-menu-btn" title="Menu">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="mobile-page-title">Auctus</div>
+        <div class="mobile-header-spacer"></div>
+    </div>
+
     <!-- Main Container -->
     <div class="main-container">
-        <!-- Activity Bar -->
+        <!-- Activity Bar (hidden on mobile) -->
         <div class="activity-bar">
             <div class="activity-icons">
                 <div class="activity-icon active" data-view="explorer">
                     <i class="fas fa-folder"></i>
                 </div>
-                <div class="activity-icon" data-view="git">
-                    <i class="fas fa-code-branch"></i>
+                <div class="activity-icon" data-view="account">
+                    <i class="fas fa-user"></i>
                 </div>
                 <div class="activity-icon" data-view="extensions">
                     <i class="fas fa-th"></i>
                 </div>
             </div>
             <div class="activity-icons-bottom">
-                <div class="activity-icon">
-                    <i class="fas fa-user"></i>
-                </div>
-                <div class="activity-icon">
+                <div class="activity-icon" data-view="settings">
                     <i class="fas fa-cog"></i>
                 </div>
             </div>
@@ -39,6 +45,8 @@
 
         <!-- Editor Area -->
         <div class="editor-container">
+            <!-- Animated Background Canvas (only on home page) -->
+            <canvas id="particle-canvas"></canvas>
             <!-- Tabs Bar (managed by Router) -->
             <div class="tabs"></div>
             
