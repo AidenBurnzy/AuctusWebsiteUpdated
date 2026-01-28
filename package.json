@@ -1,0 +1,20 @@
+{
+  "name": "auctus-website",
+  "version": "1.0.0",
+  "description": "Auctus Website with Authentication",
+  "main": "api/index.js",
+  "scripts": {
+    "dev": "node api/index.js",
+    "build": "echo 'Build successful'",
+    "start": "node api/index.js"
+  },
+  "dependencies": {
+    "pg": "^8.11.3",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.1.2",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
+}
