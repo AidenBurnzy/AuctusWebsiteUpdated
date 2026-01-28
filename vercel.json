@@ -1,18 +1,5 @@
 {
-  "buildCommand": "npm install",
-  "outputDirectory": ".",
-  "installCommand": "npm install",
   "framework": null,
-  "functions": {
-    "api/**/*.js": {
-      "runtime": "nodejs20.x"
-    }
-  },
-  "routes": [
-    {
-      "src": "/(.*)",
-      "status": 404,
-      "dest": "/"
-    }
-  ]
+  "buildCommand": "npm install",
+  "installCommand": "npm install"
 }
