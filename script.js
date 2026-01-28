@@ -2672,6 +2672,9 @@ const PAGE_INIT = {
                     });
 
                     const data = await response.json();
+                    
+                    // Log the full response for debugging
+                    console.log('Signup response:', { status: response.status, data });
 
                     if (response.ok) {
                         // If registration includes tokens, store them
