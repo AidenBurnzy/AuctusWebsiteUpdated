@@ -33,7 +33,7 @@ const API_CONFIG = {
         return this.BACKEND_URL + '/api/auth/login';
     },
     get REGISTER() {
-        return this.BACKEND_URL + '/api/website-integration/register';
+        return this.BACKEND_URL + '/api/public/register';
     }
 };
 
