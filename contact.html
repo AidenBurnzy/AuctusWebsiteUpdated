@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact - Auctus Studio</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -35,10 +36,17 @@
 
         <div class="editor-container">
             <div class="tabs">
+                <div class="tab" data-file="home" onclick="window.location.href='index.html';" style="cursor: pointer;">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </div>
+                <!-- Services tab will be added dynamically if opened -->
+                <!-- Pricing tab will be added dynamically if opened -->
+                <!-- Mission tab will be added dynamically if opened -->
                 <div class="tab active" data-file="contact">
                     <i class="fas fa-envelope"></i>
                     <span>contact.html</span>
-                    <button class="tab-close">×</button>
+                    <i class="fas fa-times" onclick="event.stopPropagation(); sessionStorage.removeItem('contactTabOpen'); window.location.href='index.html';" style="cursor: pointer;"></i>
                 </div>
             </div>
 
@@ -52,7 +60,7 @@
                             <p class="contact-hero-subtitle">Tell us about the transformation you are ready to launch. We blend breakthrough AI, immersive web design, and precise automation into a single engagement tailored to your vision.</p>
                             
                             <div class="hero-actions">
-                                <a class="hero-btn primary" href="mailto:hello@auctusstudio.com">
+                                <a class="hero-btn primary" href="mailto:founder.auctusventures@gmail.com">
                                     <i class="fas fa-envelope"></i> Email The Studio
                                 </a>
                                 <a class="hero-btn secondary" href="tel:+16162686297">
@@ -182,7 +190,7 @@
                                     <h3 class="meta-title">Direct Channels</h3>
                                 </div>
                                 <div class="meta-body">
-                                    <a href="mailto:hello@auctusstudio.com">hello@auctusstudio.com</a>
+                                    <a href="mailto:founder.auctusventures@gmail.com">founder.auctusventures@gmail.com</a>
                                     <a href="tel:+16162686297">(616) 268-6297</a>
                                     <p>Prefer a live sync? Share a few times that work and we will align instantly.</p>
                                 </div>
@@ -250,7 +258,7 @@
                                 <p class="cta-subtitle">Whether you are modernizing operations, launching an intelligent product, or unifying your digital presence, Auctus Studio builds the momentum you need.</p>
                             </div>
                             <div class="cta-actions">
-                                <a class="cta-btn primary" href="mailto:hello@auctusstudio.com">
+                                <a class="cta-btn primary" href="mailto:founder.auctusventures@gmail.com">
                                     <i class="fas fa-calendar"></i> Book A Strategy Call
                                 </a>
                                 <a class="cta-btn secondary" href="index.html">
@@ -314,10 +322,12 @@
             servicesTab.setAttribute('data-file', 'services');
             servicesTab.onclick = function() { window.location.href='services.html'; };
             servicesTab.innerHTML = `
+                <i class="fas fa-briefcase"></i>
                 <span>services.md</span>
-                <i class="fas fa-times" onclick="event.stopPropagation(); sessionStorage.removeItem('servicesTabOpen'); this.parentElement.remove();"></i>
+                <i class="fas fa-times" onclick="event.stopPropagation(); sessionStorage.removeItem('servicesTabOpen'); this.parentElement.remove();" style="cursor: pointer;"></i>
             `;
-            tabsContainer.appendChild(servicesTab);
+            const contactTab = tabsContainer.querySelector('[data-file="contact"]');
+            tabsContainer.insertBefore(servicesTab, contactTab);
         }
         
         // Check if pricing tab should be displayed
@@ -328,10 +338,12 @@
             pricingTab.setAttribute('data-file', 'pricing');
             pricingTab.onclick = function() { window.location.href='pricing.html'; };
             pricingTab.innerHTML = `
+                <i class="fas fa-tag"></i>
                 <span>pricing.md</span>
-                <i class="fas fa-times" onclick="event.stopPropagation(); sessionStorage.removeItem('pricingTabOpen'); this.parentElement.remove();"></i>
+                <i class="fas fa-times" onclick="event.stopPropagation(); sessionStorage.removeItem('pricingTabOpen'); this.parentElement.remove();" style="cursor: pointer;"></i>
             `;
-            tabsContainer.appendChild(pricingTab);
+            const contactTab = tabsContainer.querySelector('[data-file="contact"]');
+            tabsContainer.insertBefore(pricingTab, contactTab);
         }
         
         // Check if mission tab should be displayed
@@ -342,10 +354,12 @@
             missionTab.setAttribute('data-file', 'mission');
             missionTab.onclick = function() { window.location.href='mission.html'; };
             missionTab.innerHTML = `
-                <span>mission.md</span>
-                <i class="fas fa-times" onclick="event.stopPropagation(); sessionStorage.removeItem('missionTabOpen'); this.parentElement.remove();"></i>
+                <i class="fas fa-bullseye"></i>
+                <span>about.md</span>
+                <i class="fas fa-times" onclick="event.stopPropagation(); sessionStorage.removeItem('missionTabOpen'); this.parentElement.remove();" style="cursor: pointer;"></i>
             `;
-            tabsContainer.appendChild(missionTab);
+            const contactTab = tabsContainer.querySelector('[data-file="contact"]');
+            tabsContainer.insertBefore(missionTab, contactTab);
         }
     </script>
 </body>

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Services - Auctus Studio</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -38,12 +39,14 @@
         <!-- Editor Area -->
         <div class="editor-container">
             <div class="tabs">
-                <div class="tab" data-file="home" onclick="window.location.href='index.html'">
+                <div class="tab" data-file="home" onclick="window.location.href='index.html';" style="cursor: pointer;">
+                    <i class="fas fa-home"></i>
                     <span>Home</span>
                 </div>
                 <div class="tab active" data-file="services">
+                    <i class="fas fa-briefcase"></i>
                     <span>services.md</span>
-                    <i class="fas fa-times" onclick="event.stopPropagation(); sessionStorage.removeItem('servicesTabOpen'); window.location.href='index.html'"></i>
+                    <i class="fas fa-times" onclick="event.stopPropagation(); sessionStorage.removeItem('servicesTabOpen'); window.location.href='index.html';" style="cursor: pointer;"></i>
                 </div>
                 <!-- Pricing tab will be added dynamically if opened -->
             </div>
@@ -193,7 +196,8 @@
                         <h2>Ready to Elevate Your Online Presence?</h2>
                         <p>Let's create something extraordinary together.</p>
                         <div class="cta-buttons">
-                            <button class="btn-primary">Start Your Project</button>
+                            <a href="pricing.html" class="btn-primary">View Pricing Plans</a>
+                            <a href="contact.html" class="btn-primary">Start Your Project</a>
                             <a href="index.html" class="btn-secondary">Back to Home</a>
                         </div>
                     </div>
@@ -234,8 +238,9 @@
             pricingTab.setAttribute('data-file', 'pricing');
             pricingTab.onclick = function() { window.location.href='pricing.html'; };
             pricingTab.innerHTML = `
+                <i class="fas fa-tag"></i>
                 <span>pricing.md</span>
-                <i class="fas fa-times" onclick="event.stopPropagation(); sessionStorage.removeItem('pricingTabOpen'); this.parentElement.remove();"></i>
+                <i class="fas fa-times" onclick="event.stopPropagation(); sessionStorage.removeItem('pricingTabOpen'); this.parentElement.remove();" style="cursor: pointer;"></i>
             `;
             tabsContainer.appendChild(pricingTab);
         }
@@ -248,10 +253,26 @@
             missionTab.setAttribute('data-file', 'mission');
             missionTab.onclick = function() { window.location.href='mission.html'; };
             missionTab.innerHTML = `
-                <span>mission.md</span>
-                <i class="fas fa-times" onclick="event.stopPropagation(); sessionStorage.removeItem('missionTabOpen'); this.parentElement.remove();"></i>
+                <i class="fas fa-bullseye"></i>
+                <span>about.md</span>
+                <i class="fas fa-times" onclick="event.stopPropagation(); sessionStorage.removeItem('missionTabOpen'); this.parentElement.remove();" style="cursor: pointer;"></i>
             `;
             tabsContainer.appendChild(missionTab);
+        }
+
+        // Check if contact tab should be displayed
+        if (sessionStorage.getItem('contactTabOpen') === 'true') {
+            const tabsContainer = document.querySelector('.tabs');
+            const contactTab = document.createElement('div');
+            contactTab.className = 'tab';
+            contactTab.setAttribute('data-file', 'contact');
+            contactTab.onclick = function() { window.location.href='contact.html'; };
+            contactTab.innerHTML = `
+                <i class="fas fa-envelope"></i>
+                <span>contact.html</span>
+                <i class="fas fa-times" onclick="event.stopPropagation(); sessionStorage.removeItem('contactTabOpen'); this.parentElement.remove();" style="cursor: pointer;"></i>
+            `;
+            tabsContainer.appendChild(contactTab);
         }
     </script>
 </body>

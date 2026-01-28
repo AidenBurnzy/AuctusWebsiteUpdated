@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pricing - Auctus Studio</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -38,13 +39,15 @@
         <!-- Editor Area -->
         <div class="editor-container">
             <div class="tabs">
-                <div class="tab" data-file="home" onclick="window.location.href='index.html'">
+                <div class="tab" data-file="home" onclick="window.location.href='index.html';" style="cursor: pointer;">
+                    <i class="fas fa-home"></i>
                     <span>Home</span>
                 </div>
                 <!-- Services tab will be added dynamically if opened -->
                 <div class="tab active" data-file="pricing">
+                    <i class="fas fa-tag"></i>
                     <span>pricing.md</span>
-                    <i class="fas fa-times" onclick="event.stopPropagation(); sessionStorage.removeItem('pricingTabOpen'); window.location.href='index.html'"></i>
+                    <i class="fas fa-times" onclick="event.stopPropagation(); sessionStorage.removeItem('pricingTabOpen'); window.location.href='index.html';" style="cursor: pointer;"></i>
                 </div>
             </div>
             <div class="editor-content pricing-page">
@@ -88,7 +91,7 @@
                                 <div class="feature"><i class="fas fa-check"></i> Monthly updates</div>
                                 <div class="feature"><i class="fas fa-check"></i> Email support</div>
                             </div>
-                            <button class="plan-btn">Get Started</button>
+                            <a href="contact.html?plan=intro" class="plan-btn">Get Started</a>
                         </div>
 
                         <!-- Starter Plan -->
@@ -111,7 +114,7 @@
                                 <div class="feature"><i class="fas fa-check"></i> Email support</div>
                                 <div class="feature referral"><i class="fas fa-gift"></i> $100 referral bonus</div>
                             </div>
-                            <button class="plan-btn">Get Started</button>
+                            <a href="contact.html?plan=starter" class="plan-btn">Get Started</a>
                         </div>
 
                         <!-- Professional Plan -->
@@ -135,7 +138,7 @@
                                 <div class="feature"><i class="fas fa-check"></i> 2 hours/month changes included</div>
                                 <div class="feature referral"><i class="fas fa-gift"></i> $250 referral bonus</div>
                             </div>
-                            <button class="plan-btn primary">Get Started</button>
+                            <a href="contact.html?plan=professional" class="plan-btn primary">Get Started</a>
                         </div>
 
                         <!-- Premium Plan -->
@@ -159,7 +162,7 @@
                                 <div class="feature"><i class="fas fa-check"></i> AI chatbot/receptionist available</div>
                                 <div class="feature referral"><i class="fas fa-gift"></i> $400 referral bonus</div>
                             </div>
-                            <button class="plan-btn">Get Started</button>
+                            <a href="contact.html?plan=premium" class="plan-btn">Get Started</a>
                         </div>
                     </div>
                 </div>
@@ -185,7 +188,7 @@
                                 <div class="feature"><i class="fas fa-info-circle"></i> Maintenance: $80/hr</div>
                                 <div class="feature referral"><i class="fas fa-gift"></i> $100 referral bonus</div>
                             </div>
-                            <button class="plan-btn">Purchase Now</button>
+                            <a href="contact.html?plan=basic-site" class="plan-btn">Purchase Now</a>
                         </div>
 
                         <!-- Professional Website -->
@@ -207,7 +210,7 @@
                                 <div class="feature"><i class="fas fa-info-circle"></i> Maintenance: $80/hr</div>
                                 <div class="feature referral"><i class="fas fa-gift"></i> $250 referral bonus</div>
                             </div>
-                            <button class="plan-btn primary">Purchase Now</button>
+                            <a href="contact.html?plan=professional-site" class="plan-btn primary">Purchase Now</a>
                         </div>
 
                         <!-- Premium Website -->
@@ -228,7 +231,7 @@
                                 <div class="feature"><i class="fas fa-info-circle"></i> Maintenance: $80/hr</div>
                                 <div class="feature referral"><i class="fas fa-gift"></i> $500 referral bonus</div>
                             </div>
-                            <button class="plan-btn">Contact Us</button>
+                            <a href="contact.html?plan=premium-site" class="plan-btn">Contact Us</a>
                         </div>
                     </div>
                 </div>
@@ -343,7 +346,7 @@
                 <section class="pricing-cta">
                     <h2>Ready to Get Started?</h2>
                     <p>Let's discuss which plan is right for your project</p>
-                    <button class="btn-primary">Contact Us Today</button>
+                    <a href="contact.html" class="btn-primary">Contact Us Today</a>
                 </section>
             </div>
         </div>
@@ -381,8 +384,9 @@
             servicesTab.setAttribute('data-file', 'services');
             servicesTab.onclick = function() { window.location.href='services.html'; };
             servicesTab.innerHTML = `
+                <i class="fas fa-briefcase"></i>
                 <span>services.md</span>
-                <i class="fas fa-times" onclick="event.stopPropagation(); sessionStorage.removeItem('servicesTabOpen'); this.parentElement.remove();"></i>
+                <i class="fas fa-times" onclick="event.stopPropagation(); sessionStorage.removeItem('servicesTabOpen'); this.parentElement.remove();" style="cursor: pointer;"></i>
             `;
             // Insert after home tab (before pricing tab)
             const pricingTab = tabsContainer.querySelector('[data-file="pricing"]');
@@ -397,10 +401,26 @@
             missionTab.setAttribute('data-file', 'mission');
             missionTab.onclick = function() { window.location.href='mission.html'; };
             missionTab.innerHTML = `
-                <span>mission.md</span>
-                <i class="fas fa-times" onclick="event.stopPropagation(); sessionStorage.removeItem('missionTabOpen'); this.parentElement.remove();"></i>
+                <i class="fas fa-bullseye"></i>
+                <span>about.md</span>
+                <i class="fas fa-times" onclick="event.stopPropagation(); sessionStorage.removeItem('missionTabOpen'); this.parentElement.remove();" style="cursor: pointer;"></i>
             `;
             tabsContainer.appendChild(missionTab);
+        }
+
+        // Check if contact tab should be displayed
+        if (sessionStorage.getItem('contactTabOpen') === 'true') {
+            const tabsContainer = document.querySelector('.tabs');
+            const contactTab = document.createElement('div');
+            contactTab.className = 'tab';
+            contactTab.setAttribute('data-file', 'contact');
+            contactTab.onclick = function() { window.location.href='contact.html'; };
+            contactTab.innerHTML = `
+                <i class="fas fa-envelope"></i>
+                <span>contact.html</span>
+                <i class="fas fa-times" onclick="event.stopPropagation(); sessionStorage.removeItem('contactTabOpen'); this.parentElement.remove();" style="cursor: pointer;"></i>
+            `;
+            tabsContainer.appendChild(contactTab);
         }
 
         // Toggle between monthly and one-time pricing
