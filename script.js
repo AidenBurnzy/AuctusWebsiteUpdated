@@ -2753,6 +2753,21 @@ function initializeSidebar() {
                 if (currentViewIcon) {
                     currentViewIcon.classList.add('active');
                 }
+                
+                // Restore correct sidebar content view
+                const explorerContent = document.getElementById('explorer-content');
+                const accountContent = document.getElementById('account-content');
+                const sidebarTitle = document.getElementById('sidebar-title');
+                
+                if (currentActiveView === 'account') {
+                    if (explorerContent) explorerContent.style.display = 'none';
+                    if (accountContent) accountContent.style.display = 'block';
+                    if (sidebarTitle) sidebarTitle.textContent = 'ACCOUNT';
+                } else {
+                    if (explorerContent) explorerContent.style.display = 'block';
+                    if (accountContent) accountContent.style.display = 'none';
+                    if (sidebarTitle) sidebarTitle.textContent = 'EXPLORER';
+                }
             }
             
             // Mobile menu button handler - use current mobileMenuBtn reference
@@ -2796,18 +2811,68 @@ function initializeSidebar() {
                 icon.addEventListener('click', () => {
                     const view = icon.getAttribute('data-view');
                     
-                    // Handle account icon - navigate to login page
+                    // Handle account icon - toggle account section in sidebar
                     if (view === 'account') {
-                        if (typeof router !== 'undefined' && router) {
-                            router.navigate('login');
-                        } else {
-                            window.location.hash = '#/login';
-                        }
-                        // Close drawer on mobile after navigation
+                        const explorerContent = document.getElementById('explorer-content');
+                        const accountContent = document.getElementById('account-content');
+                        const sidebarTitle = document.getElementById('sidebar-title');
+                        const isSidebarVisible = sidebar.classList.contains('visible') || !sidebar.classList.contains('hidden');
+                        const clickedActiveIcon = currentActiveView === view;
+                        
+                        // Mobile drawer behavior
                         if (DEVICE.isMobile()) {
-                            sidebar.classList.remove('visible');
-                            document.body.classList.remove('sidebar-open');
-                            sessionStorage.setItem('sidebarOpen', 'false');
+                            if (clickedActiveIcon && isSidebarVisible) {
+                                // Close sidebar if clicking active account icon
+                                sidebar.classList.remove('visible');
+                                document.body.classList.remove('sidebar-open');
+                                sessionStorage.setItem('sidebarOpen', 'false');
+                                activityIcons.forEach(i => i.classList.remove('active'));
+                            } else {
+                                // Open sidebar and show account content
+                                sidebar.classList.add('visible');
+                                document.body.classList.add('sidebar-open');
+                                sessionStorage.setItem('sidebarOpen', 'true');
+                                icon.classList.add('active');
+                                currentActiveView = view;
+                                sessionStorage.setItem('currentActiveView', view);
+                                
+                                if (explorerContent && accountContent) {
+                                    explorerContent.style.display = 'none';
+                                    accountContent.style.display = 'block';
+                                    if (sidebarTitle) sidebarTitle.textContent = 'ACCOUNT';
+                                }
+                            }
+                        } else {
+                            // Desktop toggle behavior
+                            const sidebarIsOpen = !sidebar.classList.contains('hidden');
+                            
+                            if (clickedActiveIcon && sidebarIsOpen) {
+                                // Close sidebar if clicking active account icon
+                                sidebar.classList.add('hidden');
+                                sessionStorage.setItem('sidebarOpen', 'false');
+                                activityIcons.forEach(i => i.classList.remove('active'));
+                            } else if (clickedActiveIcon && !sidebarIsOpen) {
+                                // Open sidebar if clicking active account icon while closed
+                                sidebar.classList.remove('hidden');
+                                sessionStorage.setItem('sidebarOpen', 'true');
+                                icon.classList.add('active');
+                            } else {
+                                // Switch to account view and open sidebar
+                                if (!sidebarIsOpen) {
+                                    sidebar.classList.remove('hidden');
+                                    sessionStorage.setItem('sidebarOpen', 'true');
+                                }
+                                activityIcons.forEach(i => i.classList.remove('active'));
+                                icon.classList.add('active');
+                                currentActiveView = view;
+                                sessionStorage.setItem('currentActiveView', view);
+                                
+                                if (explorerContent && accountContent) {
+                                    explorerContent.style.display = 'none';
+                                    accountContent.style.display = 'block';
+                                    if (sidebarTitle) sidebarTitle.textContent = 'ACCOUNT';
+                                }
+                            }
                         }
                         return;
                     }
@@ -2824,6 +2889,15 @@ function initializeSidebar() {
                     // Explorer icon behavior
                     const isSidebarVisible = sidebar.classList.contains('visible') || !sidebar.classList.contains('hidden');
                     const clickedActiveIcon = currentActiveView === view;
+                    
+                    // Show explorer content
+                    const explorerContent = document.getElementById('explorer-content');
+                    const accountContent = document.getElementById('account-content');
+                    const sidebarTitle = document.getElementById('sidebar-title');
+                    
+                    if (explorerContent) explorerContent.style.display = 'block';
+                    if (accountContent) accountContent.style.display = 'none';
+                    if (sidebarTitle) sidebarTitle.textContent = 'EXPLORER';
                     
                     // Mobile drawer behavior
                     if (DEVICE.isMobile()) {

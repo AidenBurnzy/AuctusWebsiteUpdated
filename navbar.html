@@ -2,7 +2,7 @@
 <div class="sidebar" id="sidebar">
     <!-- Sidebar Header -->
     <div class="sidebar-header">
-        <span class="sidebar-title">EXPLORER</span>
+        <span class="sidebar-title" id="sidebar-title">EXPLORER</span>
         <button class="sidebar-close-btn" id="sidebar-close-btn" title="Close Menu">
             <i class="fas fa-times"></i>
         </button>
@@ -13,8 +13,8 @@
 
     <!-- Sidebar Content -->
     <div class="sidebar-content">
-        <!-- Navigation Items -->
-        <div class="sidebar-section">
+        <!-- Navigation Items (Explorer View) -->
+        <div class="sidebar-section" id="explorer-content">
             <a href="#/home" class="sidebar-item" title="Home">
                 <i class="fas fa-home"></i>
                 <span class="sidebar-item-label">Home</span>
@@ -34,6 +34,18 @@
             <a href="#/contact" class="sidebar-item" title="Contact">
                 <i class="fas fa-envelope"></i>
                 <span class="sidebar-item-label">Contact</span>
+            </a>
+        </div>
+
+        <!-- Account Items (Account View) -->
+        <div class="sidebar-section" id="account-content" style="display: none;">
+            <a href="#/login" class="sidebar-item" title="Sign In">
+                <i class="fas fa-sign-in-alt"></i>
+                <span class="sidebar-item-label">Sign In</span>
+            </a>
+            <a href="#/signup" class="sidebar-item" title="Create Account">
+                <i class="fas fa-user-plus"></i>
+                <span class="sidebar-item-label">Create Account</span>
             </a>
         </div>
     </div>
