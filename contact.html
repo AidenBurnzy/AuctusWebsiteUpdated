@@ -9,13 +9,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <div id="navbar-container"></div>
-
     <div class="main-container">
         <div class="activity-bar">
             <div class="activity-icons">
-                <div class="activity-icon active" data-view="search">
-                    <i class="fas fa-search"></i>
+                <div class="activity-icon active" data-view="explorer">
+                    <i class="fas fa-folder"></i>
                 </div>
                 <div class="activity-icon" data-view="git">
                     <i class="fas fa-code-branch"></i>
@@ -33,6 +31,8 @@
                 </div>
             </div>
         </div>
+
+        <div id="sidebar-container"></div>
 
         <div class="editor-container">
             <div class="tabs">
@@ -286,11 +286,90 @@
     </div>
 
     <script>
-        // Load navbar
+        // Load sidebar
         fetch('navbar.html')
             .then(response => response.text())
             .then(data => {
-                document.getElementById('navbar-container').innerHTML = data;
+                document.getElementById('sidebar-container').innerHTML = data;
+                
+                // Initialize after sidebar loads
+                const sidebarCollapseBtn = document.getElementById('sidebar-collapse-btn');
+                const sidebar = document.getElementById('sidebar');
+                const activityIcons = document.querySelectorAll('.activity-icon[data-view]');
+                
+                // Store current active view
+                let currentActiveView = sessionStorage.getItem('currentActiveView') || 'explorer';
+                
+                // Restore sidebar state from sessionStorage
+                const sidebarOpen = sessionStorage.getItem('sidebarOpen') !== 'false';
+                if (!sidebarOpen && sidebar) {
+                    sidebar.classList.add('hidden');
+                } else if (sidebarOpen) {
+                    // Restore active icon when sidebar is open
+                    const currentViewIcon = document.querySelector(`.activity-icon[data-view="${currentActiveView}"]`);
+                    if (currentViewIcon) {
+                        currentViewIcon.classList.add('active');
+                    }
+                }
+                
+                // Activity icon click handlers
+                activityIcons.forEach(icon => {
+                    icon.addEventListener('click', () => {
+                        const view = icon.getAttribute('data-view');
+                        
+                        // Handle non-explorer icons - just switch active state, don't touch sidebar
+                        if (view !== 'explorer') {
+                            activityIcons.forEach(i => i.classList.remove('active'));
+                            icon.classList.add('active');
+                            currentActiveView = view;
+                            sessionStorage.setItem('currentActiveView', view);
+                            return;
+                        }
+                        
+                        // Explorer icon behavior
+                        const sidebarIsOpen = !sidebar.classList.contains('hidden');
+                        const clickedActiveIcon = currentActiveView === view;
+                        
+                        if (clickedActiveIcon && sidebarIsOpen) {
+                            sidebar.classList.add('hidden');
+                            sessionStorage.setItem('sidebarOpen', 'false');
+                            activityIcons.forEach(i => i.classList.remove('active'));
+                        } else if (clickedActiveIcon && !sidebarIsOpen) {
+                            sidebar.classList.remove('hidden');
+                            sessionStorage.setItem('sidebarOpen', 'true');
+                            icon.classList.add('active');
+                        } else {
+                            // Clicking explorer when another view is active - open sidebar
+                            if (!sidebarIsOpen) {
+                                sidebar.classList.remove('hidden');
+                                sessionStorage.setItem('sidebarOpen', 'true');
+                            }
+                            activityIcons.forEach(i => i.classList.remove('active'));
+                            icon.classList.add('active');
+                            currentActiveView = view;
+                            sessionStorage.setItem('currentActiveView', view);
+                        }
+                    });
+                });
+                
+                // Collapse button handler
+                if (sidebarCollapseBtn && sidebar) {
+                    sidebarCollapseBtn.addEventListener('click', () => {
+                        const wasOpen = !sidebar.classList.contains('hidden');
+                        sidebar.classList.toggle('hidden');
+                        const isOpen = !sidebar.classList.contains('hidden');
+                        sessionStorage.setItem('sidebarOpen', isOpen);
+                        
+                        if (wasOpen && !isOpen) {
+                            activityIcons.forEach(i => i.classList.remove('active'));
+                        } else if (!wasOpen && isOpen) {
+                            const currentViewIcon = document.querySelector(`.activity-icon[data-view="${currentActiveView}"]`);
+                            if (currentViewIcon) {
+                                currentViewIcon.classList.add('active');
+                            }
+                        }
+                    });
+                }
             });
 
         // Handle form submission
@@ -362,5 +441,6 @@
             tabsContainer.insertBefore(missionTab, contactTab);
         }
     </script>
+    <script src="script.js"></script>
 </body>
 </html>
