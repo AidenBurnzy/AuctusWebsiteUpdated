@@ -1221,6 +1221,32 @@ const PAGES = {
                                 <p class="auth-form-subtitle">Join Auctus Studio and start building amazing projects</p>
 
                                 <form class="auth-form" id="signupForm">
+                                    <!-- Company Field -->
+                                    <div class="form-group">
+                                        <label for="signup-company" class="form-label">Company Name</label>
+                                        <input
+                                            type="text"
+                                            id="signup-company"
+                                            name="company"
+                                            class="form-input"
+                                            placeholder="Your company name"
+                                            required
+                                        />
+                                    </div>
+
+                                    <!-- Contact Name Field -->
+                                    <div class="form-group">
+                                        <label for="signup-contact" class="form-label">Contact Name</label>
+                                        <input
+                                            type="text"
+                                            id="signup-contact"
+                                            name="contact"
+                                            class="form-input"
+                                            placeholder="Your full name"
+                                            required
+                                        />
+                                    </div>
+
                                     <!-- Email Field -->
                                     <div class="form-group">
                                         <label for="signup-email" class="form-label">Email Address</label>
@@ -1234,15 +1260,16 @@ const PAGES = {
                                         />
                                     </div>
 
-                                    <!-- Company Field -->
+                                    <!-- Phone Field -->
                                     <div class="form-group">
-                                        <label for="signup-company" class="form-label">Company (Optional)</label>
+                                        <label for="signup-phone" class="form-label">Phone Number</label>
                                         <input
-                                            type="text"
-                                            id="signup-company"
-                                            name="company"
+                                            type="tel"
+                                            id="signup-phone"
+                                            name="phone"
                                             class="form-input"
-                                            placeholder="Your company name"
+                                            placeholder="+1 (555) 123-4567"
+                                            required
                                         />
                                     </div>
 
@@ -2626,7 +2653,9 @@ const PAGE_INIT = {
                 e.preventDefault();
 
                 const company = document.getElementById('signup-company').value;
+                const contact = document.getElementById('signup-contact').value;
                 const email = document.getElementById('signup-email').value;
+                const phone = document.getElementById('signup-phone').value;
                 const password = document.getElementById('signup-password').value;
                 const confirmPassword = document.getElementById('signup-confirm').value;
                 const termsAccepted = document.getElementById('signup-terms').checked;
@@ -2664,8 +2693,10 @@ const PAGE_INIT = {
                             'Content-Type': 'application/json',
                         },
                         body: JSON.stringify({ 
-                            email, 
-                            clientName: company, 
+                            companyName: company,
+                            contactName: contact,
+                            email,
+                            phoneNumber: phone,
                             password,
                             confirmPassword 
                         })
