@@ -4,6 +4,40 @@
 // ===================================================================
 
 // ===================================================================
+// API CONFIGURATION
+// Configure API endpoints based on environment
+// ===================================================================
+const API_CONFIG = {
+    // Get the base URL based on environment
+    BACKEND_URL: (function() {
+        const hostname = window.location.hostname;
+        const protocol = window.location.protocol;
+        
+        // Production: Vercel deployment
+        if (hostname.includes('vercel.app')) {
+            // Use auctus-app backend for all Vercel deployments
+            return 'https://auctus-app.vercel.app';
+        }
+        
+        // Local development
+        if (hostname === 'localhost' || hostname === '127.0.0.1') {
+            return 'http://localhost:3000';
+        }
+        
+        // Default fallback
+        return `${protocol}//${hostname}:3000`;
+    })(),
+    
+    // API endpoints
+    get LOGIN() {
+        return this.BACKEND_URL + '/api/auth/login';
+    },
+    get REGISTER() {
+        return this.BACKEND_URL + '/api/website-integration/register';
+    }
+};
+
+// ===================================================================
 // PAGES CONTENT REGISTRY
 // All page content stored as template literals for instant loading
 // ===================================================================
@@ -2524,8 +2558,8 @@ const PAGE_INIT = {
                 submitBtn.disabled = true;
 
                 try {
-                    // Call your backend API (adjust URL as needed)
-                    const response = await fetch('http://localhost:3000/api/auth/login', {
+                    // Call backend API using configured endpoint
+                    const response = await fetch(API_CONFIG.LOGIN, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -2623,8 +2657,8 @@ const PAGE_INIT = {
                 submitBtn.disabled = true;
 
                 try {
-                    // Call your backend API
-                    const response = await fetch('http://localhost:3000/api/website-integration/register', {
+                    // Call backend API using configured endpoint
+                    const response = await fetch(API_CONFIG.REGISTER, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
