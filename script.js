@@ -2660,6 +2660,9 @@ const PAGE_INIT = {
                 const confirmPassword = document.getElementById('signup-confirm').value;
                 const termsAccepted = document.getElementById('signup-terms').checked;
 
+                // Debug: Log form values
+                console.log('Form values:', { company, contact, email, phone, password: '***', confirmPassword: '***' });
+
                 // Validation
                 if (password !== confirmPassword) {
                     messageDiv.className = 'auth-message error';
@@ -2686,20 +2689,26 @@ const PAGE_INIT = {
                 submitBtn.disabled = true;
 
                 try {
+                    // Prepare request payload
+                    const requestData = { 
+                        companyName: company,
+                        contactName: contact,
+                        email,
+                        phoneNumber: phone,
+                        password,
+                        confirmPassword 
+                    };
+                    
+                    // Debug: Log what we're sending
+                    console.log('Sending to backend:', { ...requestData, password: '***', confirmPassword: '***' });
+                    
                     // Call backend API using configured endpoint
                     const response = await fetch(API_CONFIG.REGISTER, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                         },
-                        body: JSON.stringify({ 
-                            companyName: company,
-                            contactName: contact,
-                            email,
-                            phoneNumber: phone,
-                            password,
-                            confirmPassword 
-                        })
+                        body: JSON.stringify(requestData)
                     });
 
                     const data = await response.json();
