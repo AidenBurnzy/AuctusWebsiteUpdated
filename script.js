@@ -2184,9 +2184,10 @@ function initializeSidebar() {
                 }
             }
             
-            // Mobile menu button handler
-            if (mobileMenuBtn) {
-                mobileMenuBtn.addEventListener('click', (e) => {
+            // Mobile menu button handler - use current mobileMenuBtn reference
+            const currentMobileMenuBtn = document.getElementById('mobile-menu-btn');
+            if (currentMobileMenuBtn) {
+                currentMobileMenuBtn.addEventListener('click', (e) => {
                     e.stopPropagation();
                     sidebar.classList.add('visible');
                     document.body.classList.add('sidebar-open');
@@ -2204,8 +2205,8 @@ function initializeSidebar() {
                 });
             }
             
-            // Mobile drawer overlay handler
-            if (DEVICE.isMobile() && sidebar) {
+            // Mobile/responsive drawer overlay handler - always add, works for both mobile and resized desktop
+            if (sidebar) {
                 // Add click handler to body overlay to close drawer
                 document.body.addEventListener('click', (e) => {
                     if (document.body.classList.contains('sidebar-open') && 

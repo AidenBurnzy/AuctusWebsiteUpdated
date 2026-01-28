@@ -2828,6 +2828,13 @@ body {
 }
 
 /* ========== DESKTOPS (LG): 1024px - 1439px ========== */
+@media (min-width: 768px) {
+    /* Hide profile button in sidebar for tablet and desktop (only show in activity bar) */
+    #mobile-profile-btn {
+        display: none;
+    }
+}
+
 @media (min-width: 1024px) {
     /* Hide mobile header */
     .mobile-header {
