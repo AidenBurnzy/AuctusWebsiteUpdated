@@ -470,7 +470,7 @@ body {
 
 .welcome-screen h1 {
     font-size: 56px;
-    font-weight: 300;
+    font-weight: 800;
     margin-bottom: 8px;
     background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end), #3b82f6);
     -webkit-background-clip: text;
@@ -483,7 +483,7 @@ body {
     font-size: 18px;
     color: var(--accent-color);
     margin-bottom: 20px;
-    font-weight: 400;
+    font-weight: 700;
 }
 
 .hero-description {
@@ -492,12 +492,14 @@ body {
     margin-bottom: 40px;
     line-height: 1.6;
     max-width: 600px;
+    font-weight: 700;
 }
 
 .hero-buttons {
     display: flex;
     gap: 15px;
     margin-bottom: 20px;
+    font-weight: 700;
     flex-wrap: wrap;
 }
 
