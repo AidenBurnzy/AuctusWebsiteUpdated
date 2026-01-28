@@ -40,7 +40,7 @@
             <span class="menu-item dropdown-trigger">
                 View
                 <div class="dropdown-menu">
-                    <a href="#" class="dropdown-item" onclick="document.documentElement.requestFullscreen(); return false;">
+                    <a href="#" class="dropdown-item" onclick="if(document.fullscreenElement){document.exitFullscreen();}else{document.documentElement.requestFullscreen();} return false;">
                         <i class="fas fa-expand"></i>
                         <span>Toggle Fullscreen</span>
                     </a>
