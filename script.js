@@ -43,7 +43,7 @@ const API_CONFIG = {
     },
     get PORTAL_URL() {
         // Portal is hosted on same domain as AuctusApp backend
-        return this.BACKEND_URL + '/portal/coming-soon';
+        return this.BACKEND_URL + '/client-login';
     }
 };
 
@@ -1231,28 +1231,15 @@ const PAGES = {
                                 <p class="auth-form-subtitle">Join Auctus Studio and start building amazing projects</p>
 
                                 <form class="auth-form" id="signupForm">
-                                    <!-- Company Field -->
+                                    <!-- Phone Field -->
                                     <div class="form-group">
-                                        <label for="signup-company" class="form-label">Company Name</label>
+                                        <label for="signup-phone" class="form-label">Phone Number</label>
                                         <input
-                                            type="text"
-                                            id="signup-company"
-                                            name="company"
+                                            type="tel"
+                                            id="signup-phone"
+                                            name="phone"
                                             class="form-input"
-                                            placeholder="Your company name"
-                                            required
-                                        />
-                                    </div>
-
-                                    <!-- Contact Name Field -->
-                                    <div class="form-group">
-                                        <label for="signup-contact" class="form-label">Contact Name</label>
-                                        <input
-                                            type="text"
-                                            id="signup-contact"
-                                            name="contact"
-                                            class="form-input"
-                                            placeholder="Your full name"
+                                            placeholder="+1 (555) 123-4567"
                                             required
                                         />
                                     </div>
@@ -1266,19 +1253,6 @@ const PAGES = {
                                             name="email"
                                             class="form-input"
                                             placeholder="you@example.com"
-                                            required
-                                        />
-                                    </div>
-
-                                    <!-- Phone Field -->
-                                    <div class="form-group">
-                                        <label for="signup-phone" class="form-label">Phone Number</label>
-                                        <input
-                                            type="tel"
-                                            id="signup-phone"
-                                            name="phone"
-                                            class="form-input"
-                                            placeholder="+1 (555) 123-4567"
                                             required
                                         />
                                     </div>
@@ -1308,6 +1282,39 @@ const PAGES = {
                                             placeholder="••••••••"
                                             required
                                         />
+                                    </div>
+
+                                    <!-- Extra Information Section (Collapsible) -->
+                                    <div class="extra-info-section">
+                                        <button type="button" class="extra-info-toggle" id="extraInfoToggle">
+                                            <i class="fas fa-chevron-down"></i>
+                                            <span>Extra Information (Optional)</span>
+                                        </button>
+                                        <div class="extra-info-content" id="extraInfoContent" style="display: none;">
+                                            <!-- Company Field -->
+                                            <div class="form-group">
+                                                <label for="signup-company" class="form-label">Company Name</label>
+                                                <input
+                                                    type="text"
+                                                    id="signup-company"
+                                                    name="company"
+                                                    class="form-input"
+                                                    placeholder="Your company name"
+                                                />
+                                            </div>
+
+                                            <!-- Contact Name Field -->
+                                            <div class="form-group">
+                                                <label for="signup-contact" class="form-label">Contact Name</label>
+                                                <input
+                                                    type="text"
+                                                    id="signup-contact"
+                                                    name="contact"
+                                                    class="form-input"
+                                                    placeholder="Your full name"
+                                                />
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <!-- Terms Checkbox -->
@@ -2655,6 +2662,19 @@ const PAGE_INIT = {
             signupToLoginBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 router.navigate('login');
+            });
+        }
+
+        // Extra Information toggle
+        const extraInfoToggle = document.getElementById('extraInfoToggle');
+        const extraInfoContent = document.getElementById('extraInfoContent');
+        
+        if (extraInfoToggle && extraInfoContent) {
+            extraInfoToggle.addEventListener('click', (e) => {
+                e.preventDefault();
+                const isOpen = extraInfoContent.style.display !== 'none';
+                extraInfoContent.style.display = isOpen ? 'none' : 'flex';
+                extraInfoToggle.classList.toggle('open');
             });
         }
 

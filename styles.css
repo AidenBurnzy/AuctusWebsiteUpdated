@@ -3387,6 +3387,61 @@ body {
     text-decoration: underline;
 }
 
+/* Extra Information Collapsible Section */
+.extra-info-section {
+    margin-top: 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.extra-info-toggle {
+    width: 100%;
+    padding: 12px 14px;
+    background-color: var(--bg-secondary);
+    border: none;
+    color: var(--text-primary);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.2s ease;
+}
+
+.extra-info-toggle:hover {
+    background-color: var(--bg-hover);
+}
+
+.extra-info-toggle i {
+    transition: transform 0.3s ease;
+}
+
+.extra-info-toggle.open i {
+    transform: rotate(180deg);
+}
+
+.extra-info-content {
+    padding: 16px 14px;
+    background-color: var(--bg-primary);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        max-height: 0;
+    }
+    to {
+        opacity: 1;
+        max-height: 500px;
+    }
+}
+
 .auth-button {
     padding: 12px 20px;
     font-size: 14px;
