@@ -2237,8 +2237,38 @@ class Router {
                 ${route !== 'home' ? `<i class="fas fa-times" data-close="${route}"></i>` : ''}
             `;
             
-            // Tab click to navigate
+            // Tab click to navigate - with mobile tap handling
+            let touchStartTime = 0;
+            let isTouchEvent = false;
+            
+            tab.addEventListener('touchstart', (e) => {
+                touchStartTime = Date.now();
+                isTouchEvent = true;
+            });
+            
+            tab.addEventListener('touchend', (e) => {
+                const touchDuration = Date.now() - touchStartTime;
+                isTouchEvent = false;
+                
+                // Handle long-press context menu (>500ms)
+                if (touchDuration > 500 && route !== 'home') {
+                    e.preventDefault();
+                    this.showTabContextMenu(e, route);
+                    return;
+                }
+                
+                // Handle short tap - navigate
+                if (!e.target.classList.contains('fa-times')) {
+                    e.preventDefault();
+                    this.navigate(route);
+                }
+            });
+            
+            // Regular click handler (for non-touch devices)
             tab.addEventListener('click', (e) => {
+                // Skip if this was a touch event (already handled above)
+                if (isTouchEvent) return;
+                
                 if (!e.target.classList.contains('fa-times')) {
                     this.navigate(route);
                 }
@@ -2249,6 +2279,7 @@ class Router {
             if (closeBtn) {
                 closeBtn.addEventListener('click', (e) => {
                     e.stopPropagation();
+                    e.preventDefault();
                     this.closeTab(route);
                 });
             }
@@ -2263,22 +2294,8 @@ class Router {
                 tab.addEventListener('dragend', (e) => this.handleDragEnd(e));
             }
             
-            // Mobile long-press context menu for tab management
+            // Context menu handler for right-click
             if (DEVICE.isTouchDevice()) {
-                let touchStartTime = 0;
-                
-                tab.addEventListener('touchstart', (e) => {
-                    touchStartTime = Date.now();
-                });
-                
-                tab.addEventListener('touchend', (e) => {
-                    const touchDuration = Date.now() - touchStartTime;
-                    if (touchDuration > 500 && route !== 'home') {
-                        e.preventDefault();
-                        this.showTabContextMenu(e, route);
-                    }
-                });
-                
                 tab.addEventListener('contextmenu', (e) => {
                     e.preventDefault();
                     if (route !== 'home') {
