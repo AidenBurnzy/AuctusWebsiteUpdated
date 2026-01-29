@@ -2678,25 +2678,12 @@ const PAGE_INIT = {
     signup: () => {
         const form = document.getElementById('signupForm');
         const messageDiv = document.getElementById('signup-message');
+        // Remove company/contact logic, keep only login fields
         const signupToLoginBtn = document.getElementById('signup-login-switch');
-
         if (signupToLoginBtn) {
             signupToLoginBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 router.navigate('login');
-            });
-        }
-
-        // Extra Information toggle
-        const extraInfoToggle = document.getElementById('extraInfoToggle');
-        const extraInfoContent = document.getElementById('extraInfoContent');
-        
-        if (extraInfoToggle && extraInfoContent) {
-            extraInfoToggle.addEventListener('click', (e) => {
-                e.preventDefault();
-                const isOpen = extraInfoContent.style.display !== 'none';
-                extraInfoContent.style.display = isOpen ? 'none' : 'flex';
-                extraInfoToggle.classList.toggle('open');
             });
         }
 
