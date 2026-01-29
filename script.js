@@ -91,8 +91,8 @@ const PAGES = {
                         </div>
                         
                         <h1>Auctus Studio</h1>
-                        <p class="hero-subtitle">AI-Powered Web Design & Development</p>
-                        <p class="hero-description">Transform your vision into a stunning web presence. We blend breakthrough AI, immersive design, and precise automation to create websites that drive results.</p>
+                        <p class="hero-subtitle">Professional Web Design & Development</p>
+                        <p class="hero-description">Transform your vision into a stunning web presence. We blend creative design, modern technology, and expert craftsmanship to create websites that drive results.</p>
                         
                         <div class="hero-buttons" id="home-hero-buttons">
                             <!-- Buttons populated by JavaScript -->
@@ -160,13 +160,13 @@ const PAGES = {
 
                         <div class="service-card">
                             <div class="card-number">03</div>
-                            <h3>AI Work Solutions</h3>
+                            <h3>Web Applications</h3>
                             <div class="card-features">
-                                <span class="feature-tag"><i class="fas fa-robot"></i> Smart Automation</span>
+                                <span class="feature-tag"><i class="fas fa-code"></i> Custom Solutions</span>
                                 <span class="feature-tag"><i class="fas fa-chart-line"></i> Data Driven</span>
                                 <span class="feature-tag"><i class="fas fa-cog"></i> Scalable</span>
                             </div>
-                            <p>Intelligent automation and AI-powered tools that transform how you work. From chatbots to predictive analytics, we implement cutting-edge AI solutions that give your business a competitive edge.</p>
+                            <p>Custom web applications tailored to your business needs. From dashboards and management systems to client portals, we build powerful tools that streamline your operations and enhance productivity.</p>
                         </div>
                     </div>
                 </section>
@@ -385,7 +385,7 @@ const PAGES = {
                                 <div class="feature"><i class="fas fa-check"></i> Monthly performance reports</div>
                                 <div class="feature"><i class="fas fa-check"></i> 5 hours/month changes included</div>
                                 <div class="feature"><i class="fas fa-check"></i> Phone support</div>
-                                <div class="feature"><i class="fas fa-check"></i> AI chatbot/receptionist available</div>
+                                <div class="feature"><i class="fas fa-check"></i> Priority updates & maintenance</div>
                                 <div class="feature referral"><i class="fas fa-gift"></i> $400 referral bonus</div>
                             </div>
                             <a href="#/contact?plan=premium" class="plan-btn">Get Started</a>
