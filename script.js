@@ -2678,7 +2678,6 @@ const PAGE_INIT = {
     signup: () => {
         const form = document.getElementById('signupForm');
         const messageDiv = document.getElementById('signup-message');
-        // Remove company/contact logic, keep only login fields
         const signupToLoginBtn = document.getElementById('signup-login-switch');
         if (signupToLoginBtn) {
             signupToLoginBtn.addEventListener('click', (e) => {
@@ -2687,20 +2686,36 @@ const PAGE_INIT = {
             });
         }
 
+        // Extra Information toggle (optional fields)
+        const extraInfoToggle = document.getElementById('extraInfoToggle');
+        const extraInfoContent = document.getElementById('extraInfoContent');
+        if (extraInfoToggle && extraInfoContent) {
+            extraInfoToggle.addEventListener('click', (e) => {
+                e.preventDefault();
+                const isOpen = extraInfoContent.style.display !== 'none';
+                extraInfoContent.style.display = isOpen ? 'none' : 'flex';
+                extraInfoToggle.classList.toggle('open');
+            });
+        }
+
         if (form) {
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
 
-                const company = document.getElementById('signup-company').value;
-                const contact = document.getElementById('signup-contact').value;
                 const email = document.getElementById('signup-email').value;
-                const phone = document.getElementById('signup-phone').value;
+                const phoneInput = document.getElementById('signup-phone');
                 const password = document.getElementById('signup-password').value;
                 const confirmPassword = document.getElementById('signup-confirm').value;
                 const termsAccepted = document.getElementById('signup-terms').checked;
 
+                const companyInput = document.getElementById('signup-company');
+                const contactInput = document.getElementById('signup-contact');
+                const company = companyInput ? companyInput.value : '';
+                const contact = contactInput ? contactInput.value : '';
+                const phone = phoneInput ? phoneInput.value : '';
+
                 // Debug: Log form values
-                console.log('Form values:', { company, contact, email, phone, password: '***', confirmPassword: '***' });
+                console.log('Form values:', { email, phone, password: '***', confirmPassword: '***' });
 
                 // Validation
                 if (password !== confirmPassword) {
@@ -2724,21 +2739,21 @@ const PAGE_INIT = {
                 submitBtn.disabled = true;
 
                 try {
-                    // Prepare request payload for AuctusApp public register endpoint
+                    // Prepare request payload for AuctusApp website integration endpoint
                     const requestData = { 
-                        company: company,
-                        contactName: contact,
                         email,
-                        phone: phone,
                         password,
                         confirmPassword 
                     };
+                    if (phone) requestData.phone = phone;
+                    if (company) requestData.company = company;
+                    if (contact) requestData.contactName = contact;
                     
                     // Debug: Log what we're sending
                     console.log('Sending to backend:', { ...requestData, password: '***', confirmPassword: '***' });
                     
-                    // Call AuctusApp public register endpoint (no webhook signature needed)
-                    const response = await fetch(API_CONFIG.REGISTER, {
+                    // Call AuctusApp website integration register endpoint
+                    const response = await fetch(API_CONFIG.WEBSITE_REGISTER, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
