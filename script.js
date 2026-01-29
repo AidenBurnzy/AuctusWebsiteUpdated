@@ -778,7 +778,14 @@ const PAGES = {
                             </div>
 
                             <div class="form-group">
-                                <small class="password-hint">We’ll email your secure login link after signup.</small>
+                                <label for="signup-password">Password</label>
+                                <input type="password" id="signup-password" name="password" placeholder="Enter a strong password" required>
+                                <small class="password-hint">At least 8 characters, with uppercase, lowercase, and numbers</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="signup-confirm">Confirm Password</label>
+                                <input type="password" id="signup-confirm" name="confirmPassword" placeholder="Confirm password" required>
                             </div>
 
                             <div class="form-group checkbox">
@@ -2677,6 +2684,8 @@ const PAGE_INIT = {
 
                 const email = document.getElementById('signup-email').value;
                 const phoneInput = document.getElementById('signup-phone');
+                const password = document.getElementById('signup-password').value;
+                const confirmPassword = document.getElementById('signup-confirm').value;
                 const termsAccepted = document.getElementById('signup-terms').checked;
 
                 const companyInput = document.getElementById('signup-company');
@@ -2686,7 +2695,14 @@ const PAGE_INIT = {
                 const phone = phoneInput ? phoneInput.value.trim() : '';
 
                 // Debug: Log form values
-                console.log('Form values:', { email, phone });
+                console.log('Form values:', { email, phone, password: '***', confirmPassword: '***' });
+
+                // Validation
+                if (password !== confirmPassword) {
+                    messageDiv.className = 'auth-message error';
+                    messageDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> The passwords you entered do not match. Please try again.';
+                    return;
+                }
 
                 if (!termsAccepted) {
                     messageDiv.className = 'auth-message error';
@@ -2704,6 +2720,8 @@ const PAGE_INIT = {
                     // Prepare request payload for signed website integration endpoint
                     const requestData = {
                         email,
+                        password,
+                        confirmPassword,
                         company: company || 'Individual',
                         contactName: contact || 'Website Client',
                         phone: phone || 'N/A'
