@@ -2241,6 +2241,7 @@ class Router {
             let isTouchEvent = false;
             
             tab.addEventListener('touchstart', (e) => {
+                e.preventDefault();
                 isTouchEvent = true;
             });
             
