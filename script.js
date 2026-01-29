@@ -1281,8 +1281,31 @@ const PAGES = {
                                         />
                                     </div>
 
+                                    <!-- Password Field -->
                                     <div class="form-group">
-                                        <small class="password-hint">We’ll email your secure login link after signup.</small>
+                                        <label for="signup-password" class="form-label">Password</label>
+                                        <input
+                                            type="password"
+                                            id="signup-password"
+                                            name="password"
+                                            class="form-input"
+                                            placeholder="••••••••"
+                                            required
+                                        />
+                                        <small class="password-hint">At least 8 characters</small>
+                                    </div>
+
+                                    <!-- Confirm Password Field -->
+                                    <div class="form-group">
+                                        <label for="signup-confirm" class="form-label">Confirm Password</label>
+                                        <input
+                                            type="password"
+                                            id="signup-confirm"
+                                            name="confirm_password"
+                                            class="form-input"
+                                            placeholder="••••••••"
+                                            required
+                                        />
                                     </div>
 
                                     <!-- Extra Information Section (Collapsible) -->
