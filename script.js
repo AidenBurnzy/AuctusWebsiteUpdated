@@ -47,6 +47,28 @@ const API_CONFIG = {
     }
 };
 
+// Build a portal redirect URL with optional token handoff (for cross-domain login)
+function buildPortalRedirectUrl(accessToken, refreshToken) {
+    try {
+        const url = new URL(API_CONFIG.PORTAL_URL, window.location.origin);
+
+        if (accessToken) {
+            const hashParams = new URLSearchParams();
+            hashParams.set('access_token', accessToken);
+            if (refreshToken) {
+                hashParams.set('refresh_token', refreshToken);
+            }
+            hashParams.set('source', 'auctus-studio');
+            url.hash = hashParams.toString();
+        }
+
+        return url.toString();
+    } catch (error) {
+        console.error('Error building portal redirect URL:', error);
+        return API_CONFIG.PORTAL_URL;
+    }
+}
+
 // ===================================================================
 // PAGES CONTENT REGISTRY
 // All page content stored as template literals for instant loading
@@ -2625,9 +2647,10 @@ const PAGE_INIT = {
                         messageDiv.className = 'auth-message success';
                         messageDiv.innerHTML = '<i class="fas fa-check-circle"></i> Welcome back! Redirecting to your portal...';
 
-                        // Redirect to AuctusApp portal after 1.5 seconds
+                        // Redirect to AuctusApp portal after 1.5 seconds (handoff tokens)
+                        const redirectUrl = buildPortalRedirectUrl(data.accessToken, data.refreshToken);
                         setTimeout(() => {
-                            window.location.href = API_CONFIG.PORTAL_URL;
+                            window.location.href = redirectUrl;
                         }, 1500);
                     } else {
                         // Show error message
@@ -2755,9 +2778,10 @@ const PAGE_INIT = {
                         messageDiv.className = 'auth-message success';
                         messageDiv.innerHTML = '<i class="fas fa-check-circle"></i> Account created successfully! Redirecting to your portal...';
 
-                        // Redirect to portal after 1.5 seconds
+                        // Redirect to portal after 1.5 seconds (handoff tokens if provided)
+                        const redirectUrl = buildPortalRedirectUrl(data.accessToken, data.refreshToken);
                         setTimeout(() => {
-                            window.location.href = API_CONFIG.PORTAL_URL;
+                            window.location.href = redirectUrl;
                         }, 1500);
                     } else {
                         // Show specific error messages based on backend response
