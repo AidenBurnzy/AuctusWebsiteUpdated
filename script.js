@@ -780,7 +780,7 @@ const PAGES = {
                             <div class="form-group">
                                 <label for="signup-password">Password</label>
                                 <input type="password" id="signup-password" name="password" placeholder="Enter a strong password" required>
-                                <small class="password-hint">At least 8 characters, with uppercase, lowercase, and numbers</small>
+                                <small class="password-hint">Choose any password you want</small>
                             </div>
 
                             <div class="form-group">
@@ -1292,7 +1292,7 @@ const PAGES = {
                                             placeholder="••••••••"
                                             required
                                         />
-                                        <small class="password-hint">At least 8 characters</small>
+                                        <small class="password-hint">Choose any password you want</small>
                                     </div>
 
                                     <!-- Confirm Password Field -->
