@@ -2267,6 +2267,19 @@ class Router {
             // Close button
             const closeBtn = tab.querySelector('.fa-times');
             if (closeBtn) {
+                // Touch handlers for mobile
+                closeBtn.addEventListener('touchstart', (e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                });
+                
+                closeBtn.addEventListener('touchend', (e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    this.closeTab(route);
+                });
+                
+                // Click handler for desktop
                 closeBtn.addEventListener('click', (e) => {
                     e.stopPropagation();
                     e.preventDefault();

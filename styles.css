@@ -328,14 +328,14 @@ body {
 .tab {
     display: flex;
     align-items: center;
-    justify-content: center;
     gap: 10px;
     padding: 0 15px;
+    height: 35px;
     cursor: pointer;
     background-color: var(--bg-tertiary);
     border-right: 1px solid var(--border-color);
     font-size: 13px;
-    line-height: 1;
+    line-height: 35px;
     transition: background-color 0.2s;
 }
 
@@ -421,6 +421,13 @@ body {
 /* Show close button on hover */
 .tab:hover .fa-times {
     opacity: 1;
+}
+
+/* Show close button on active tab for mobile */
+@media (max-width: 768px) {
+    .tab.active .fa-times {
+        opacity: 1;
+    }
 }
 
 .tab i:hover {
