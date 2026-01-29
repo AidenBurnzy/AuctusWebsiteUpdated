@@ -2238,30 +2238,19 @@ class Router {
             `;
             
             // Tab click to navigate - with mobile tap handling
-            let touchStartTime = 0;
             let isTouchEvent = false;
             
             tab.addEventListener('touchstart', (e) => {
-                touchStartTime = Date.now();
                 isTouchEvent = true;
             });
             
             tab.addEventListener('touchend', (e) => {
-                const touchDuration = Date.now() - touchStartTime;
-                isTouchEvent = false;
-                
-                // Handle long-press context menu (>500ms)
-                if (touchDuration > 500 && route !== 'home') {
-                    e.preventDefault();
-                    this.showTabContextMenu(e, route);
-                    return;
-                }
-                
-                // Handle short tap - navigate
+                // Handle tap - navigate
                 if (!e.target.classList.contains('fa-times')) {
                     e.preventDefault();
                     this.navigate(route);
                 }
+                isTouchEvent = false;
             });
             
             // Regular click handler (for non-touch devices)
@@ -2292,16 +2281,6 @@ class Router {
                 tab.addEventListener('dragleave', (e) => this.handleDragLeave(e));
                 tab.addEventListener('drop', (e) => this.handleDrop(e, route, index));
                 tab.addEventListener('dragend', (e) => this.handleDragEnd(e));
-            }
-            
-            // Context menu handler for right-click
-            if (DEVICE.isTouchDevice()) {
-                tab.addEventListener('contextmenu', (e) => {
-                    e.preventDefault();
-                    if (route !== 'home') {
-                        this.showTabContextMenu(e, route);
-                    }
-                });
             }
             
             this.tabsContainer.appendChild(tab);
