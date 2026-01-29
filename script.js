@@ -38,6 +38,9 @@ const API_CONFIG = {
     get WEBSITE_REGISTER() {
         return this.BACKEND_URL + '/api/website-integration/register';
     },
+    get WEBSITE_REGISTER_PROXY() {
+        return '/api/website/register';
+    },
     get PORTAL_FEATURES() {
         return this.BACKEND_URL + '/api/client/portal/features';
     },
@@ -765,8 +768,8 @@ const PAGES = {
 
                         <form class="auth-form" id="signupForm">
                             <div class="form-group">
-                                <label for="signup-company">Company Name</label>
-                                <input type="text" id="signup-company" name="company" placeholder="Your Company" required>
+                                <label for="signup-company">Company Name (Optional)</label>
+                                <input type="text" id="signup-company" name="company" placeholder="Your Company">
                             </div>
 
                             <div class="form-group">
@@ -775,14 +778,7 @@ const PAGES = {
                             </div>
 
                             <div class="form-group">
-                                <label for="signup-password">Password</label>
-                                <input type="password" id="signup-password" name="password" placeholder="Enter a strong password" required>
-                                <small class="password-hint">At least 8 characters, with uppercase, lowercase, and numbers</small>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="signup-confirm">Confirm Password</label>
-                                <input type="password" id="signup-confirm" name="confirmPassword" placeholder="Confirm password" required>
+                                <small class="password-hint">We’ll email your secure login link after signup.</small>
                             </div>
 
                             <div class="form-group checkbox">
@@ -1278,31 +1274,8 @@ const PAGES = {
                                         />
                                     </div>
 
-                                    <!-- Password Field -->
                                     <div class="form-group">
-                                        <label for="signup-password" class="form-label">Password</label>
-                                        <input
-                                            type="password"
-                                            id="signup-password"
-                                            name="password"
-                                            class="form-input"
-                                            placeholder="••••••••"
-                                            required
-                                        />
-                                        <small class="password-hint">Enter a strong password</small>
-                                    </div>
-
-                                    <!-- Confirm Password Field -->
-                                    <div class="form-group">
-                                        <label for="signup-confirm" class="form-label">Confirm Password</label>
-                                        <input
-                                            type="password"
-                                            id="signup-confirm"
-                                            name="confirm_password"
-                                            class="form-input"
-                                            placeholder="••••••••"
-                                            required
-                                        />
+                                        <small class="password-hint">We’ll email your secure login link after signup.</small>
                                     </div>
 
                                     <!-- Extra Information Section (Collapsible) -->
@@ -2704,27 +2677,16 @@ const PAGE_INIT = {
 
                 const email = document.getElementById('signup-email').value;
                 const phoneInput = document.getElementById('signup-phone');
-                const password = document.getElementById('signup-password').value;
-                const confirmPassword = document.getElementById('signup-confirm').value;
                 const termsAccepted = document.getElementById('signup-terms').checked;
 
                 const companyInput = document.getElementById('signup-company');
                 const contactInput = document.getElementById('signup-contact');
-                const company = companyInput ? companyInput.value : '';
-                const contact = contactInput ? contactInput.value : '';
-                const phone = phoneInput ? phoneInput.value : '';
+                const company = companyInput ? companyInput.value.trim() : '';
+                const contact = contactInput ? contactInput.value.trim() : '';
+                const phone = phoneInput ? phoneInput.value.trim() : '';
 
                 // Debug: Log form values
-                console.log('Form values:', { email, phone, password: '***', confirmPassword: '***' });
-
-                // Validation
-                if (password !== confirmPassword) {
-                    messageDiv.className = 'auth-message error';
-                    messageDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> The passwords you entered do not match. Please try again.';
-                    return;
-                }
-
-
+                console.log('Form values:', { email, phone });
 
                 if (!termsAccepted) {
                     messageDiv.className = 'auth-message error';
@@ -2739,21 +2701,19 @@ const PAGE_INIT = {
                 submitBtn.disabled = true;
 
                 try {
-                    // Prepare request payload for AuctusApp website integration endpoint
-                    const requestData = { 
+                    // Prepare request payload for signed website integration endpoint
+                    const requestData = {
                         email,
-                        password,
-                        confirmPassword 
+                        company: company || 'Individual',
+                        contactName: contact || 'Website Client',
+                        phone: phone || 'N/A'
                     };
-                    if (phone) requestData.phone = phone;
-                    if (company) requestData.company = company;
-                    if (contact) requestData.contactName = contact;
                     
                     // Debug: Log what we're sending
                     console.log('Sending to backend:', { ...requestData, password: '***', confirmPassword: '***' });
                     
-                    // Call AuctusApp website integration register endpoint
-                    const response = await fetch(API_CONFIG.WEBSITE_REGISTER, {
+                    // Call website integration proxy (server signs request)
+                    const response = await fetch(API_CONFIG.WEBSITE_REGISTER_PROXY, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -2767,40 +2727,46 @@ const PAGE_INIT = {
                     console.log('Signup response:', { status: response.status, data });
 
                     if (response.ok) {
-                        // Store tokens if registration includes them
-                        if (data.accessToken) {
-                            localStorage.setItem('accessToken', data.accessToken);
-                            localStorage.setItem('refreshToken', data.refreshToken);
-                        }
-                        
                         // Store email for reference
                         localStorage.setItem('websiteClientEmail', email);
 
-                        // Show success message
-                        messageDiv.className = 'auth-message success';
-                        messageDiv.innerHTML = '<i class="fas fa-check-circle"></i> Account created successfully! Redirecting to your portal...';
+                        // If tokens were returned, redirect to portal
+                        if (data.accessToken) {
+                            localStorage.setItem('accessToken', data.accessToken);
+                            localStorage.setItem('refreshToken', data.refreshToken);
 
-                        // Redirect to portal after 1.5 seconds (handoff tokens if provided)
-                        const redirectUrl = buildPortalRedirectUrl(data.accessToken, data.refreshToken);
-                        setTimeout(() => {
-                            window.location.href = redirectUrl;
-                        }, 1500);
+                            messageDiv.className = 'auth-message success';
+                            messageDiv.innerHTML = '<i class="fas fa-check-circle"></i> Account created successfully! Redirecting to your portal...';
+
+                            const redirectUrl = buildPortalRedirectUrl(data.accessToken, data.refreshToken);
+                            setTimeout(() => {
+                                window.location.href = redirectUrl;
+                            }, 1500);
+                        } else {
+                            messageDiv.className = 'auth-message success';
+                            messageDiv.innerHTML = '<i class="fas fa-check-circle"></i> Account created! Check your email for your portal login link.';
+
+                            setTimeout(() => {
+                                router.navigate('login');
+                            }, 3000);
+                        }
                     } else {
                         // Show specific error messages based on backend response
                         let errorMessage = 'Sign up failed. Please try again.';
                         
                         // Map backend error messages to user-friendly messages
-                        if (data.message) {
-                            if (data.message.toLowerCase().includes('email') && data.message.toLowerCase().includes('exist')) {
+                        const backendMessage = data.message || data.error;
+                        if (backendMessage) {
+                            if (backendMessage.toLowerCase().includes('email') && backendMessage.toLowerCase().includes('exist')) {
                                 errorMessage = 'This email is already registered. Please use a different email or try logging in.';
-                            } else if (data.message.toLowerCase().includes('email') && data.message.toLowerCase().includes('invalid')) {
+                            } else if (backendMessage.toLowerCase().includes('email') && backendMessage.toLowerCase().includes('invalid')) {
                                 errorMessage = 'Please enter a valid email address.';
-                            } else if (data.message.toLowerCase().includes('password')) {
+                            } else if (backendMessage.toLowerCase().includes('password')) {
                                 errorMessage = 'Password does not meet requirements. Please try a different password.';
-                            } else if (data.message.toLowerCase().includes('missing') || data.message.toLowerCase().includes('required')) {
-                                errorMessage = 'Please fill in all required fields (Email and Password).';
+                            } else if (backendMessage.toLowerCase().includes('missing') || backendMessage.toLowerCase().includes('required')) {
+                                errorMessage = 'Please fill in all required fields (Email).';
                             } else {
-                                errorMessage = data.message;
+                                errorMessage = backendMessage;
                             }
                         }
                         
