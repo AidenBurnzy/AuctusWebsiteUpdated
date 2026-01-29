@@ -1240,7 +1240,6 @@ const PAGES = {
                                             name="phone"
                                             class="form-input"
                                             placeholder="+1 (555) 123-4567"
-                                            required
                                         />
                                     </div>
 
@@ -1268,7 +1267,7 @@ const PAGES = {
                                             placeholder="••••••••"
                                             required
                                         />
-                                        <small class="password-hint">At least 8 characters</small>
+                                        <small class="password-hint">Enter a strong password</small>
                                     </div>
 
                                     <!-- Confirm Password Field -->
@@ -2696,19 +2695,15 @@ const PAGE_INIT = {
                 // Validation
                 if (password !== confirmPassword) {
                     messageDiv.className = 'auth-message error';
-                    messageDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> Passwords do not match';
+                    messageDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> The passwords you entered do not match. Please try again.';
                     return;
                 }
 
-                if (password.length < 8) {
-                    messageDiv.className = 'auth-message error';
-                    messageDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> Password must be at least 8 characters';
-                    return;
-                }
+
 
                 if (!termsAccepted) {
                     messageDiv.className = 'auth-message error';
-                    messageDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> Please accept the terms and conditions';
+                    messageDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> Please agree to the Terms of Service and Privacy Policy to continue.';
                     return;
                 }
 
@@ -2765,9 +2760,26 @@ const PAGE_INIT = {
                             window.location.href = API_CONFIG.PORTAL_URL;
                         }, 1500);
                     } else {
-                        // Show error message
+                        // Show specific error messages based on backend response
+                        let errorMessage = 'Sign up failed. Please try again.';
+                        
+                        // Map backend error messages to user-friendly messages
+                        if (data.message) {
+                            if (data.message.toLowerCase().includes('email') && data.message.toLowerCase().includes('exist')) {
+                                errorMessage = 'This email is already registered. Please use a different email or try logging in.';
+                            } else if (data.message.toLowerCase().includes('email') && data.message.toLowerCase().includes('invalid')) {
+                                errorMessage = 'Please enter a valid email address.';
+                            } else if (data.message.toLowerCase().includes('password')) {
+                                errorMessage = 'Password does not meet requirements. Please try a different password.';
+                            } else if (data.message.toLowerCase().includes('missing') || data.message.toLowerCase().includes('required')) {
+                                errorMessage = 'Please fill in all required fields (Email and Password).';
+                            } else {
+                                errorMessage = data.message;
+                            }
+                        }
+                        
                         messageDiv.className = 'auth-message error';
-                        messageDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${data.message || 'Sign up failed. Please try again.'}`;
+                        messageDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${errorMessage}`;
                         
                         // Reset button
                         submitBtn.innerHTML = originalText;
@@ -2775,7 +2787,7 @@ const PAGE_INIT = {
                     }
                 } catch (error) {
                     messageDiv.className = 'auth-message error';
-                    messageDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> Connection error. Please try again.`;
+                    messageDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> Unable to create account. Please check your connection and try again.`;
                     
                     // Reset button
                     submitBtn.innerHTML = originalText;
