@@ -34,6 +34,16 @@ const API_CONFIG = {
     },
     get REGISTER() {
         return this.BACKEND_URL + '/api/public/register';
+    },
+    get WEBSITE_REGISTER() {
+        return this.BACKEND_URL + '/api/website-integration/register';
+    },
+    get PORTAL_FEATURES() {
+        return this.BACKEND_URL + '/api/client/portal/features';
+    },
+    get PORTAL_URL() {
+        // Portal is hosted on same domain as AuctusApp backend
+        return this.BACKEND_URL + '/portal/coming-soon';
     }
 };
 
@@ -2607,11 +2617,11 @@ const PAGE_INIT = {
 
                         // Show success message
                         messageDiv.className = 'auth-message success';
-                        messageDiv.innerHTML = '<i class="fas fa-check-circle"></i> Welcome back! Redirecting...';
+                        messageDiv.innerHTML = '<i class="fas fa-check-circle"></i> Welcome back! Redirecting to your portal...';
 
-                        // Redirect after 1.5 seconds
+                        // Redirect to AuctusApp portal after 1.5 seconds
                         setTimeout(() => {
-                            router.navigate('home');
+                            window.location.href = API_CONFIG.PORTAL_URL;
                         }, 1500);
                     } else {
                         // Show error message
@@ -2689,12 +2699,12 @@ const PAGE_INIT = {
                 submitBtn.disabled = true;
 
                 try {
-                    // Prepare request payload
+                    // Prepare request payload for AuctusApp webhook integration
                     const requestData = { 
-                        companyName: company,
+                        company: company,  // Match webhook field name
                         contactName: contact,
                         email,
-                        phoneNumber: phone,
+                        phone: phone,  // Match webhook field name
                         password,
                         confirmPassword 
                     };
@@ -2702,8 +2712,8 @@ const PAGE_INIT = {
                     // Debug: Log what we're sending
                     console.log('Sending to backend:', { ...requestData, password: '***', confirmPassword: '***' });
                     
-                    // Call backend API using configured endpoint
-                    const response = await fetch(API_CONFIG.REGISTER, {
+                    // Call AuctusApp website integration webhook endpoint
+                    const response = await fetch(API_CONFIG.WEBSITE_REGISTER, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -2717,20 +2727,20 @@ const PAGE_INIT = {
                     console.log('Signup response:', { status: response.status, data });
 
                     if (response.ok) {
-                        // If registration includes tokens, store them
-                        if (data.accessToken) {
-                            localStorage.setItem('accessToken', data.accessToken);
-                            localStorage.setItem('refreshToken', data.refreshToken);
+                        // Store credentials received from webhook
+                        if (data.credentials) {
+                            localStorage.setItem('websiteClientEmail', data.credentials.email);
+                            // Magic link will be sent via email
                         }
 
-                        // Show success message
+                        // Show success message with magic link instruction
                         messageDiv.className = 'auth-message success';
-                        messageDiv.innerHTML = '<i class="fas fa-check-circle"></i> Account created successfully! Redirecting...';
+                        messageDiv.innerHTML = '<i class="fas fa-check-circle"></i> Account created successfully! Check your email for login credentials and magic link.';
 
-                        // Redirect after 1.5 seconds
+                        // Redirect to login page after 3 seconds to allow reading message
                         setTimeout(() => {
-                            router.navigate('home');
-                        }, 1500);
+                            router.navigate('login');
+                        }, 3000);
                     } else {
                         // Show error message
                         messageDiv.className = 'auth-message error';
