@@ -2699,12 +2699,12 @@ const PAGE_INIT = {
                 submitBtn.disabled = true;
 
                 try {
-                    // Prepare request payload for AuctusApp webhook integration
+                    // Prepare request payload for AuctusApp public register endpoint
                     const requestData = { 
-                        company: company,  // Match webhook field name
+                        company: company,
                         contactName: contact,
                         email,
-                        phone: phone,  // Match webhook field name
+                        phone: phone,
                         password,
                         confirmPassword 
                     };
@@ -2712,8 +2712,8 @@ const PAGE_INIT = {
                     // Debug: Log what we're sending
                     console.log('Sending to backend:', { ...requestData, password: '***', confirmPassword: '***' });
                     
-                    // Call AuctusApp website integration webhook endpoint
-                    const response = await fetch(API_CONFIG.WEBSITE_REGISTER, {
+                    // Call AuctusApp public register endpoint (no webhook signature needed)
+                    const response = await fetch(API_CONFIG.REGISTER, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -2727,20 +2727,23 @@ const PAGE_INIT = {
                     console.log('Signup response:', { status: response.status, data });
 
                     if (response.ok) {
-                        // Store credentials received from webhook
-                        if (data.credentials) {
-                            localStorage.setItem('websiteClientEmail', data.credentials.email);
-                            // Magic link will be sent via email
+                        // Store tokens if registration includes them
+                        if (data.accessToken) {
+                            localStorage.setItem('accessToken', data.accessToken);
+                            localStorage.setItem('refreshToken', data.refreshToken);
                         }
+                        
+                        // Store email for reference
+                        localStorage.setItem('websiteClientEmail', email);
 
-                        // Show success message with magic link instruction
+                        // Show success message
                         messageDiv.className = 'auth-message success';
-                        messageDiv.innerHTML = '<i class="fas fa-check-circle"></i> Account created successfully! Check your email for login credentials and magic link.';
+                        messageDiv.innerHTML = '<i class="fas fa-check-circle"></i> Account created successfully! Redirecting to your portal...';
 
-                        // Redirect to login page after 3 seconds to allow reading message
+                        // Redirect to portal after 1.5 seconds
                         setTimeout(() => {
-                            router.navigate('login');
-                        }, 3000);
+                            window.location.href = API_CONFIG.PORTAL_URL;
+                        }, 1500);
                     } else {
                         // Show error message
                         messageDiv.className = 'auth-message error';
