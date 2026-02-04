@@ -2669,29 +2669,19 @@ const PAGE_INIT = {
 
                     console.log('Login response:', { 
                         status: response.status, 
-                        success: data.success,
-                        hasAccessToken: !!data.accessToken,
-                        message: data.message || data.error 
+                        fullData: data,
+                        hasRedirectUrl: !!data.redirectUrl,
                     });
 
-                    if (response.ok && data.accessToken) {
-                        // Store tokens
-                        localStorage.setItem('accessToken', data.accessToken);
-                        localStorage.setItem('refreshToken', data.refreshToken);
-                        
-                        if (remember) {
-                            localStorage.setItem('rememberMe', 'true');
-                        }
-
+                    if (response.ok && data.success && data.redirectUrl) {
                         // Show success message
                         messageDiv.className = 'auth-message success';
-                        messageDiv.innerHTML = '<i class="fas fa-check-circle"></i> Welcome back! Redirecting to your portal...';
+                        messageDiv.innerHTML = '<i class="fas fa-check-circle"></i> Login successful! Redirecting to your portal...';
 
-                        // Redirect to AuctusApp portal after 1.5 seconds (handoff tokens)
-                        const redirectUrl = buildPortalRedirectUrl(data.accessToken, data.refreshToken);
+                        // Redirect to magic link (auto-login to portal)
                         setTimeout(() => {
-                            window.location.href = redirectUrl;
-                        }, 1500);
+                            window.location.href = data.redirectUrl;
+                        }, 1000);
                     } else {
                         // Show error message
                         messageDiv.className = 'auth-message error';

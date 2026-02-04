@@ -17,7 +17,7 @@ module.exports = async (req, res) => {
 
     // Ensure required fields are present
     const loginPayload = {
-      email: payload.email ? payload.email.toLowerCase() : '',
+      email: payload.email ? payload.email.toLowerCase().trim() : '',
       password: payload.password,
     };
 
@@ -31,10 +31,10 @@ module.exports = async (req, res) => {
       return errorResponse(res, 400, 'Password is required');
     }
 
-    console.log('Forwarding login to:', `${backendUrl}/api/auth/login`);
+    console.log('Requesting magic link from:', `${backendUrl}/api/auth/generate-magic-link`);
 
-    // Forward login request to AuctusApp backend (server-to-server, no CORS issues)
-    const response = await fetch(`${backendUrl}/api/auth/login`, {
+    // Request magic link from AuctusApp (validates credentials and generates link)
+    const response = await fetch(`${backendUrl}/api/auth/generate-magic-link`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -44,8 +44,18 @@ module.exports = async (req, res) => {
 
     const data = await response.json();
     console.log('Backend response status:', response.status);
-    
-    return successResponse(res, response.status, data);
+    console.log('Backend response data:', JSON.stringify(data));
+
+    if (!response.ok) {
+      return errorResponse(res, response.status, data.error || 'Invalid email or password');
+    }
+
+    // Return success with magic link redirect URL
+    return successResponse(res, 200, {
+      success: true,
+      redirectUrl: data.magicLink || data.redirectUrl,
+      message: 'Redirecting to portal...',
+    });
   } catch (error) {
     console.error('Website login proxy error:', error);
     return errorResponse(res, 500, 'Internal server error');
