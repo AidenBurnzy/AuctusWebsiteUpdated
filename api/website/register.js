@@ -26,10 +26,20 @@ module.exports = async (req, res) => {
       contactName: payload.contactName || 'Website Client',
       phone: payload.phone || 'N/A',
       websiteUrl: payload.websiteUrl,
+      password: payload.password,
+      confirmPassword: payload.confirmPassword,
     };
 
     if (!sanitizedPayload.email) {
       return errorResponse(res, 400, 'Email is required');
+    }
+
+    if (!sanitizedPayload.password || !sanitizedPayload.confirmPassword) {
+      return errorResponse(res, 400, 'Password and confirmation are required');
+    }
+
+    if (sanitizedPayload.password !== sanitizedPayload.confirmPassword) {
+      return errorResponse(res, 400, 'Passwords do not match');
     }
 
     const bodyText = JSON.stringify(sanitizedPayload);

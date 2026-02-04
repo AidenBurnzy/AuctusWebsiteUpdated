@@ -1338,6 +1338,18 @@ const PAGES = {
                                                     placeholder="Your full name"
                                                 />
                                             </div>
+
+                                            <!-- Website URL Field -->
+                                            <div class="form-group">
+                                                <label for="signup-website" class="form-label">Website URL</label>
+                                                <input
+                                                    type="url"
+                                                    id="signup-website"
+                                                    name="websiteUrl"
+                                                    class="form-input"
+                                                    placeholder="https://example.com"
+                                                />
+                                            </div>
                                         </div>
                                     </div>
 
@@ -2711,6 +2723,26 @@ const PAGE_INIT = {
             });
         }
 
+        const fetchWithRetry = async (url, options, retries = 3, delay = 500) => {
+            let attempt = 0;
+            while (true) {
+                try {
+                    const response = await fetch(url, options);
+                    if (response.status < 500 || attempt >= retries) {
+                        return response;
+                    }
+                } catch (error) {
+                    if (attempt >= retries) {
+                        throw error;
+                    }
+                }
+
+                attempt += 1;
+                await new Promise((resolve) => setTimeout(resolve, delay));
+                delay *= 2;
+            }
+        };
+
         if (form) {
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
@@ -2723,14 +2755,22 @@ const PAGE_INIT = {
 
                 const companyInput = document.getElementById('signup-company');
                 const contactInput = document.getElementById('signup-contact');
+                const websiteInput = document.getElementById('signup-website');
                 const company = companyInput ? companyInput.value.trim() : '';
                 const contact = contactInput ? contactInput.value.trim() : '';
+                const websiteUrl = websiteInput ? websiteInput.value.trim() : '';
                 const phone = phoneInput ? phoneInput.value.trim() : '';
 
                 // Debug: Log form values
                 console.log('Form values:', { email, phone, password: '***', confirmPassword: '***' });
 
                 // Validation
+                if (password.length < 8) {
+                    messageDiv.className = 'auth-message error';
+                    messageDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> Password must be at least 8 characters.';
+                    return;
+                }
+
                 if (password !== confirmPassword) {
                     messageDiv.className = 'auth-message error';
                     messageDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> The passwords you entered do not match. Please try again.';
@@ -2757,14 +2797,15 @@ const PAGE_INIT = {
                         confirmPassword,
                         company: company || 'Individual',
                         contactName: contact || 'Website Client',
-                        phone: phone || 'N/A'
+                        phone: phone || 'N/A',
+                        websiteUrl: websiteUrl || undefined
                     };
                     
                     // Debug: Log what we're sending
                     console.log('Sending to backend:', { ...requestData, password: '***', confirmPassword: '***' });
                     
                     // Call website integration proxy (server signs request)
-                    const response = await fetch(API_CONFIG.WEBSITE_REGISTER_PROXY, {
+                    const response = await fetchWithRetry(API_CONFIG.WEBSITE_REGISTER_PROXY, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
