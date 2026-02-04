@@ -2,5 +2,10 @@
   "framework": null,
   "buildCommand": "npm install",
   "installCommand": "npm install",
-  "outputDirectory": "."
+  "outputDirectory": ".",
+  "rewrites": [
+    { "source": "/api/website/login", "destination": "/api/website/login.js" },
+    { "source": "/api/website/register", "destination": "/api/website/register.js" },
+    { "source": "/api/(.*)", "destination": "/api/$1" }
+  ]
 }

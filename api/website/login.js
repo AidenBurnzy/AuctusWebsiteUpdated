@@ -13,6 +13,8 @@ module.exports = async (req, res) => {
   try {
     const payload = req.body && typeof req.body === 'object' ? req.body : {};
 
+    console.log('Login proxy received:', { email: payload.email, hasPassword: !!payload.password });
+
     // Ensure required fields are present
     const loginPayload = {
       email: payload.email ? payload.email.toLowerCase() : '',
@@ -20,12 +22,16 @@ module.exports = async (req, res) => {
     };
 
     if (!loginPayload.email) {
+      console.log('Login error: Email is missing');
       return errorResponse(res, 400, 'Email is required');
     }
 
     if (!loginPayload.password) {
+      console.log('Login error: Password is missing');
       return errorResponse(res, 400, 'Password is required');
     }
+
+    console.log('Forwarding login to:', `${backendUrl}/api/auth/login`);
 
     // Forward login request to AuctusApp backend (server-to-server, no CORS issues)
     const response = await fetch(`${backendUrl}/api/auth/login`, {
@@ -37,6 +43,8 @@ module.exports = async (req, res) => {
     });
 
     const data = await response.json();
+    console.log('Backend response status:', response.status);
+    
     return successResponse(res, response.status, data);
   } catch (error) {
     console.error('Website login proxy error:', error);
