@@ -2684,7 +2684,9 @@ const PAGE_INIT = {
                         messageDiv.className = 'auth-message success';
                         messageDiv.innerHTML = '<i class="fas fa-check-circle"></i> Login successful! Redirecting to your portal...';
 
-                        // Log the redirect URL
+                        // Debug: Show what we're about to redirect to
+                        alert('About to redirect to: ' + data.redirectUrl);
+                        console.log('Full response data:', JSON.stringify(data, null, 2));
                         console.log('Redirecting to:', data.redirectUrl);
 
                         // Redirect to magic link (auto-login to portal)
