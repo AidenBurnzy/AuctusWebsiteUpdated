@@ -15,7 +15,7 @@ module.exports = async (req, res) => {
 
     // Ensure required fields are present
     const loginPayload = {
-      email: payload.email,
+      email: payload.email ? payload.email.toLowerCase() : '',
       password: payload.password,
     };
 
