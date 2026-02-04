@@ -30,7 +30,7 @@ const API_CONFIG = {
     
     // API endpoints
     get LOGIN() {
-        return this.BACKEND_URL + '/api/auth/login';
+        return '/api/website/login';
     },
     get REGISTER() {
         return this.BACKEND_URL + '/api/public/register';
@@ -2648,7 +2648,7 @@ const PAGE_INIT = {
                 submitBtn.disabled = true;
 
                 try {
-                    // Call backend API using configured endpoint
+                    // Call website login proxy (handles CORS server-to-server)
                     const response = await fetch(API_CONFIG.LOGIN, {
                         method: 'POST',
                         headers: {
