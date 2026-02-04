@@ -2765,12 +2765,6 @@ const PAGE_INIT = {
                 console.log('Form values:', { email, phone, password: '***', confirmPassword: '***' });
 
                 // Validation
-                if (password.length < 8) {
-                    messageDiv.className = 'auth-message error';
-                    messageDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> Password must be at least 8 characters.';
-                    return;
-                }
-
                 if (password !== confirmPassword) {
                     messageDiv.className = 'auth-message error';
                     messageDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> The passwords you entered do not match. Please try again.';
