@@ -2665,7 +2665,13 @@ const PAGE_INIT = {
                         body: JSON.stringify({ email, password })
                     });
 
-                    const data = await response.json();
+                    let data;
+                    try {
+                        data = await response.json();
+                    } catch (parseError) {
+                        console.error('Failed to parse response:', parseError);
+                        throw new Error('Invalid server response');
+                    }
 
                     console.log('Login response:', { 
                         status: response.status, 
@@ -2685,7 +2691,8 @@ const PAGE_INIT = {
                     } else {
                         // Show error message
                         messageDiv.className = 'auth-message error';
-                        messageDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${data.message || 'Invalid email or password'}`;
+                        const errorMsg = data.error || data.message || 'Invalid email or password';
+                        messageDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${errorMsg}`;
                         
                         // Reset button
                         submitBtn.innerHTML = originalText;
