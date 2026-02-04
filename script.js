@@ -2641,6 +2641,14 @@ const PAGE_INIT = {
                 const password = document.getElementById('login-password').value;
                 const remember = document.getElementById('login-remember').checked;
 
+                // Debug logging
+                console.log('Login attempt:', { 
+                    email, 
+                    hasPassword: !!password,
+                    passwordLength: password.length,
+                    endpoint: API_CONFIG.LOGIN 
+                });
+
                 // Show loading state
                 const submitBtn = form.querySelector('button[type="submit"]');
                 const originalText = submitBtn.innerHTML;
@@ -2658,6 +2666,13 @@ const PAGE_INIT = {
                     });
 
                     const data = await response.json();
+
+                    console.log('Login response:', { 
+                        status: response.status, 
+                        success: data.success,
+                        hasAccessToken: !!data.accessToken,
+                        message: data.message || data.error 
+                    });
 
                     if (response.ok && data.accessToken) {
                         // Store tokens
