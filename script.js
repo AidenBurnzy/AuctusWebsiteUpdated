@@ -47,8 +47,30 @@ const API_CONFIG = {
     get PORTAL_URL() {
         // Portal is hosted on same domain as AuctusApp backend
         return this.BACKEND_URL + '/client-login';
+    },
+    get GOOGLE_LOGIN() {
+        return '/api/website/google-login';
+    },
+    get FORGOT_PASSWORD() {
+        return '/api/auth/forgot-password';
+    },
+    get RESET_PASSWORD() {
+        return '/api/auth/reset-password';
     }
 };
+
+function getGoogleClientId() {
+    const metaClientId = document.querySelector('meta[name="google-client-id"]');
+    if (metaClientId && metaClientId.content) {
+        return metaClientId.content.trim();
+    }
+
+    if (window.GOOGLE_CLIENT_ID) {
+        return String(window.GOOGLE_CLIENT_ID).trim();
+    }
+
+    return '';
+}
 
 // Build a portal redirect URL with optional token handoff (for cross-domain login)
 function buildPortalRedirectUrl(accessToken, refreshToken) {
@@ -860,7 +882,7 @@ const PAGES = {
                                     <input type="checkbox" name="remember" id="login-remember">
                                     <span>Remember me</span>
                                 </label>
-                                <a href="#/contact" class="forgot-password">Forgot password?</a>
+                                <a href="forgot-password.html" class="forgot-password">Forgot password?</a>
                             </div>
 
                             <button type="submit" class="auth-btn primary">
@@ -1027,6 +1049,8 @@ const PAGES = {
                                     <textarea id="message" name="message" rows="5" placeholder="Share goals, challenges, or inspiration..." required></textarea>
                                 </div>
 
+                                <div id="contact-message" class="form-message"></div>
+
                                 <button type="submit" class="submit-btn">
                                     <span>Launch The Introduction</span>
                                     <i class="fas fa-arrow-right"></i>
@@ -1176,7 +1200,7 @@ const PAGES = {
                                             <input type="checkbox" id="login-remember" name="remember" />
                                             <span>Remember me</span>
                                         </label>
-                                        <a href="#/forgot-password" class="forgot-link">Forgot password?</a>
+                                        <a href="forgot-password.html" class="forgot-link">Forgot password?</a>
                                     </div>
 
                                     <!-- Message Display -->
@@ -1195,14 +1219,7 @@ const PAGES = {
 
                                 <!-- OAuth Options -->
                                 <div class="oauth-buttons">
-                                    <button class="oauth-button google">
-                                        <i class="fab fa-google"></i>
-                                        <span>Google</span>
-                                    </button>
-                                    <button class="oauth-button github">
-                                        <i class="fab fa-github"></i>
-                                        <span>GitHub</span>
-                                    </button>
+                                    <div id="google-signin-button" class="oauth-google-container"></div>
                                 </div>
 
                                 <!-- Sign Up Link -->
@@ -1356,7 +1373,7 @@ const PAGES = {
                                     <!-- Terms Checkbox -->
                                     <label class="terms-checkbox">
                                         <input type="checkbox" id="signup-terms" name="terms" required />
-                                        <span>I agree to the <a href="#/terms" class="inline-link">Terms of Service</a> and <a href="#/privacy" class="inline-link">Privacy Policy</a></span>
+                                        <span>I agree to the <a href="terms.html" class="inline-link">Terms of Service</a> and <a href="privacy.html" class="inline-link">Privacy Policy</a></span>
                                     </label>
 
                                     <!-- Message Display -->
@@ -1375,14 +1392,7 @@ const PAGES = {
 
                                 <!-- OAuth Options -->
                                 <div class="oauth-buttons">
-                                    <button class="oauth-button google">
-                                        <i class="fab fa-google"></i>
-                                        <span>Google</span>
-                                    </button>
-                                    <button class="oauth-button github">
-                                        <i class="fab fa-github"></i>
-                                        <span>GitHub</span>
-                                    </button>
+                                    <div id="google-signup-button" class="oauth-google-container"></div>
                                 </div>
 
                                 <!-- Sign In Link -->
@@ -2175,6 +2185,9 @@ class Router {
     }
 
     navigate(route) {
+        if (!this.app) {
+            return;
+        }
         // Validate route
         if (!PAGES[route]) {
             console.error(`Route "${route}" not found`);
@@ -2503,8 +2516,8 @@ class Router {
             item.classList.remove('active');
         });
         
-        // Add active class to current route's sidebar item using hash-based href
-        const activeItem = document.querySelector(`.sidebar-item[href="#/${route}"]`);
+        // Add active class to current route's sidebar item
+        const activeItem = document.querySelector(`.sidebar-item[data-route="${route}"]`);
         if (activeItem) {
             activeItem.classList.add('active');
         }
@@ -2517,6 +2530,9 @@ class Router {
     }
 
     init() {
+        if (!this.app) {
+            return;
+        }
         // Listen to hash changes
         window.addEventListener('hashchange', () => this.handleHashChange());
         
@@ -2525,10 +2541,381 @@ class Router {
     }
 }
 
+function isSpaPage() {
+    return !!document.getElementById('app');
+}
+
+function getRouteFromSidebarLink(link) {
+    if (!link) {
+        return null;
+    }
+
+    const dataRoute = link.getAttribute('data-route');
+    if (dataRoute && PAGES[dataRoute]) {
+        return dataRoute;
+    }
+
+    const href = link.getAttribute('href') || '';
+    if (href.startsWith('#/')) {
+        const route = href.substring(2);
+        return PAGES[route] ? route : null;
+    }
+
+    if (href.includes('#/')) {
+        const route = href.split('#/')[1];
+        return PAGES[route] ? route : null;
+    }
+
+    if (href.endsWith('.html')) {
+        const route = href.replace('.html', '').replace('index', 'home');
+        return PAGES[route] ? route : null;
+    }
+
+    return null;
+}
+
 // ===================================================================
 // PAGE INITIALIZERS
 // Page-specific logic that runs after content injection
 // ===================================================================
+
+function setupContactForm() {
+    const form = document.getElementById('contactForm');
+    if (!form || form.dataset.bound === 'true') {
+        return;
+    }
+
+    const messageDiv = document.getElementById('contact-message');
+    const submitBtn = form.querySelector('button[type="submit"]');
+
+    form.dataset.bound = 'true';
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(form);
+        const payload = Object.fromEntries(formData);
+
+        if (messageDiv) {
+            messageDiv.className = 'form-message';
+            messageDiv.textContent = '';
+        }
+
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.classList.add('loading');
+        }
+
+        try {
+            const response = await fetch('/api/website/contact', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                if (messageDiv) {
+                    messageDiv.className = 'form-message success';
+                    messageDiv.textContent = data.message || 'Thanks for reaching out! We will get back to you soon.';
+                }
+                form.reset();
+            } else {
+                if (messageDiv) {
+                    messageDiv.className = 'form-message error';
+                    messageDiv.textContent = data.error || 'Something went wrong. Please try again.';
+                }
+            }
+        } catch (error) {
+            if (messageDiv) {
+                messageDiv.className = 'form-message error';
+                messageDiv.textContent = 'Connection error. Please try again.';
+            }
+            console.error('Contact form error:', error);
+        } finally {
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('loading');
+            }
+        }
+    });
+}
+
+let googleAuthInitialized = false;
+
+function waitForGoogleScript(timeoutMs = 8000) {
+    return new Promise((resolve) => {
+        if (window.google && window.google.accounts && window.google.accounts.id) {
+            resolve(true);
+            return;
+        }
+
+        const start = Date.now();
+        const timer = setInterval(() => {
+            if (window.google && window.google.accounts && window.google.accounts.id) {
+                clearInterval(timer);
+                resolve(true);
+                return;
+            }
+
+            if (Date.now() - start > timeoutMs) {
+                clearInterval(timer);
+                resolve(false);
+            }
+        }, 200);
+    });
+}
+
+function getAuthMessageDiv() {
+    return document.getElementById('login-message') || document.getElementById('signup-message');
+}
+
+async function handleGoogleCredential(response) {
+    const messageDiv = getAuthMessageDiv();
+
+    if (!response || !response.credential) {
+        if (messageDiv) {
+            messageDiv.className = 'auth-message error';
+            messageDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> Google sign-in failed. Please try again.';
+        }
+        return;
+    }
+
+    if (messageDiv) {
+        messageDiv.className = 'auth-message';
+        messageDiv.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing in with Google...';
+    }
+
+    try {
+        const responseData = await fetch(API_CONFIG.GOOGLE_LOGIN, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ idToken: response.credential })
+        });
+
+        const data = await responseData.json();
+
+        if (responseData.ok && data.redirectUrl) {
+            if (messageDiv) {
+                messageDiv.className = 'auth-message success';
+                messageDiv.innerHTML = '<i class="fas fa-check-circle"></i> Signed in! Redirecting to your portal...';
+            }
+            setTimeout(() => {
+                window.location.href = data.redirectUrl;
+            }, 800);
+        } else {
+            if (messageDiv) {
+                messageDiv.className = 'auth-message error';
+                const errorMessage = data.error || data.message || 'Google sign-in failed.';
+                messageDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${errorMessage}`;
+            }
+        }
+    } catch (error) {
+        console.error('Google sign-in error:', error);
+        if (messageDiv) {
+            messageDiv.className = 'auth-message error';
+            messageDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> Connection error. Please try again.';
+        }
+    }
+}
+
+async function setupGoogleButton(containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) {
+        return;
+    }
+
+    const clientId = getGoogleClientId();
+    if (!clientId) {
+        container.style.display = 'none';
+        return;
+    }
+
+    const ready = await waitForGoogleScript();
+    if (!ready) {
+        container.style.display = 'none';
+        return;
+    }
+
+    if (!googleAuthInitialized) {
+        window.google.accounts.id.initialize({
+            client_id: clientId,
+            callback: handleGoogleCredential
+        });
+        googleAuthInitialized = true;
+    }
+
+    container.innerHTML = '';
+    window.google.accounts.id.renderButton(container, {
+        theme: 'outline',
+        size: 'large',
+        text: 'continue_with',
+        width: 320
+    });
+}
+
+function setupForgotPasswordForm() {
+    const form = document.getElementById('forgotPasswordForm');
+    if (!form || form.dataset.bound === 'true') {
+        return;
+    }
+
+    const messageDiv = document.getElementById('forgot-password-message');
+    const submitBtn = form.querySelector('button[type="submit"]');
+    form.dataset.bound = 'true';
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const emailInput = form.querySelector('input[name="email"]');
+        const email = emailInput ? emailInput.value.trim() : '';
+
+        if (messageDiv) {
+            messageDiv.className = 'auth-message';
+            messageDiv.textContent = '';
+        }
+
+        if (!email) {
+            if (messageDiv) {
+                messageDiv.className = 'auth-message error';
+                messageDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> Please enter your email.';
+            }
+            return;
+        }
+
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending reset link...';
+        }
+
+        try {
+            const response = await fetch(API_CONFIG.FORGOT_PASSWORD, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                if (messageDiv) {
+                    messageDiv.className = 'auth-message success';
+                    messageDiv.innerHTML = `<i class="fas fa-check-circle"></i> ${data.message || 'Check your email for a reset link.'}`;
+                }
+            } else if (messageDiv) {
+                messageDiv.className = 'auth-message error';
+                messageDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${data.error || 'Unable to send reset link.'}`;
+            }
+        } catch (error) {
+            console.error('Forgot password error:', error);
+            if (messageDiv) {
+                messageDiv.className = 'auth-message error';
+                messageDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> Connection error. Please try again.';
+            }
+        } finally {
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Reset Link';
+            }
+        }
+    });
+}
+
+function setupResetPasswordForm() {
+    const form = document.getElementById('resetPasswordForm');
+    if (!form || form.dataset.bound === 'true') {
+        return;
+    }
+
+    const messageDiv = document.getElementById('reset-password-message');
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const tokenInput = form.querySelector('input[name="token"]');
+
+    const searchParams = new URLSearchParams(window.location.search);
+    const hashParams = new URLSearchParams(window.location.hash.split('?')[1] || '');
+    const token = searchParams.get('token') || hashParams.get('token');
+
+    if (tokenInput) {
+        tokenInput.value = token || '';
+    }
+
+    if (!token && messageDiv) {
+        messageDiv.className = 'auth-message error';
+        messageDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> Missing reset token. Please use the link from your email.';
+    }
+
+    form.dataset.bound = 'true';
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const password = form.querySelector('input[name="password"]')?.value || '';
+        const confirmPassword = form.querySelector('input[name="confirmPassword"]')?.value || '';
+        const tokenValue = tokenInput ? tokenInput.value.trim() : '';
+
+        if (!tokenValue) {
+            if (messageDiv) {
+                messageDiv.className = 'auth-message error';
+                messageDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> Missing reset token.';
+            }
+            return;
+        }
+
+        if (!password || !confirmPassword) {
+            if (messageDiv) {
+                messageDiv.className = 'auth-message error';
+                messageDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> Please fill in both password fields.';
+            }
+            return;
+        }
+
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating password...';
+        }
+
+        try {
+            const response = await fetch(API_CONFIG.RESET_PASSWORD, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ token: tokenValue, password, confirmPassword })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                if (messageDiv) {
+                    messageDiv.className = 'auth-message success';
+                    messageDiv.innerHTML = '<i class="fas fa-check-circle"></i> Password updated! You can sign in now.';
+                }
+                form.reset();
+            } else if (messageDiv) {
+                messageDiv.className = 'auth-message error';
+                messageDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${data.error || 'Unable to reset password.'}`;
+            }
+        } catch (error) {
+            console.error('Reset password error:', error);
+            if (messageDiv) {
+                messageDiv.className = 'auth-message error';
+                messageDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> Connection error. Please try again.';
+            }
+        } finally {
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-lock"></i> Update Password';
+            }
+        }
+    });
+}
 
 const PAGE_INIT = {
     home: () => {
@@ -2593,26 +2980,12 @@ const PAGE_INIT = {
     },
     
     contact: () => {
-        // Contact form handling
-        const form = document.getElementById('contactForm');
-        if (form) {
-            form.addEventListener('submit', (e) => {
-                e.preventDefault();
-                
-                // Collect form data
-                const formData = new FormData(form);
-                const data = Object.fromEntries(formData);
-                
-                // For now, just log it (later: send to backend/email service)
-                console.log('Form submitted:', data);
-                alert('Thank you for your message! We\'ll get back to you soon.');
-                form.reset();
-            });
-        }
+        setupContactForm();
         
         // Pre-fill plan from URL query param
-        const urlParams = new URLSearchParams(window.location.hash.split('?')[1]);
-        const plan = urlParams.get('plan');
+        const searchParams = new URLSearchParams(window.location.search);
+        const hashParams = new URLSearchParams(window.location.hash.split('?')[1] || '');
+        const plan = searchParams.get('plan') || hashParams.get('plan');
         if (plan) {
             const serviceSelect = document.getElementById('service');
             if (serviceSelect) {
@@ -2625,6 +2998,8 @@ const PAGE_INIT = {
         const form = document.getElementById('loginForm');
         const messageDiv = document.getElementById('login-message');
         const loginToSignupBtn = document.getElementById('login-signup-switch');
+
+        setupGoogleButton('google-signin-button');
 
         if (loginToSignupBtn) {
             loginToSignupBtn.addEventListener('click', (e) => {
@@ -2716,6 +3091,8 @@ const PAGE_INIT = {
         const form = document.getElementById('signupForm');
         const messageDiv = document.getElementById('signup-message');
         const signupToLoginBtn = document.getElementById('signup-login-switch');
+
+        setupGoogleButton('google-signup-button');
         if (signupToLoginBtn) {
             signupToLoginBtn.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -3173,43 +3550,28 @@ function initializeSidebar() {
             
             // Update sidebar links to use hash routing
             const sidebarLinks = sidebar.querySelectorAll('.sidebar-item[href]');
+            const spaPage = isSpaPage();
             sidebarLinks.forEach(link => {
-                const href = link.getAttribute('href');
-                if (href) {
-                    let route;
-                    
-                    if (href.startsWith('#/')) {
-                        // Already a hash route, extract the route name
-                        route = href.substring(2);
-                    } else if (!href.startsWith('#')) {
-                        // Convert .html to hash route
-                        route = href.replace('.html', '').replace('index', 'home');
-                        link.setAttribute('href', `#/${route}`);
-                    } else {
-                        // Other hash links, skip
-                        return;
-                    }
-                    
-                    // Prevent default and use router
-                    link.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        
-                        // Ensure router exists before navigating
-                        if (typeof router !== 'undefined' && router) {
-                            router.navigate(route);
-                        } else {
-                            // Fallback: update hash directly
-                            window.location.hash = `#/${route}`;
-                        }
-                        
-                        // Close drawer on mobile after navigation
-                        if (DEVICE.isMobile()) {
-                            sidebar.classList.remove('visible');
-                            document.body.classList.remove('sidebar-open');
-                            sessionStorage.setItem('sidebarOpen', 'false');
-                        }
-                    });
+                const route = getRouteFromSidebarLink(link);
+                if (!route || !spaPage) {
+                    return;
                 }
+
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+
+                    if (typeof router !== 'undefined' && router) {
+                        router.navigate(route);
+                    } else {
+                        window.location.hash = `#/${route}`;
+                    }
+
+                    if (DEVICE.isMobile()) {
+                        sidebar.classList.remove('visible');
+                        document.body.classList.remove('sidebar-open');
+                        sessionStorage.setItem('sidebarOpen', 'false');
+                    }
+                });
             });
         });
 }
@@ -3223,12 +3585,20 @@ function initializeSidebar() {
 let router;
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialize router first
-    router = new Router();
-    
-    // Initialize sidebar (which needs router to be available)
+    if (isSpaPage()) {
+        // Initialize router first
+        router = new Router();
+    }
+
+    // Initialize sidebar (router optional)
     initializeSidebar();
-    
-    // Start router
-    router.init();
+
+    // Standalone contact page support
+    setupContactForm();
+    setupForgotPasswordForm();
+    setupResetPasswordForm();
+
+    if (router) {
+        router.init();
+    }
 });

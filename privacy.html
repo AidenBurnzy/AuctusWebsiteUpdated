@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - Auctus Studio</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="main-container">
+        <div class="activity-bar">
+            <div class="activity-icons">
+                <div class="activity-icon active" data-view="explorer">
+                    <i class="fas fa-folder"></i>
+                </div>
+                <div class="activity-icon" data-view="git">
+                    <i class="fas fa-code-branch"></i>
+                </div>
+                <div class="activity-icon" data-view="extensions">
+                    <i class="fas fa-th"></i>
+                </div>
+            </div>
+            <div class="activity-icons-bottom">
+                <div class="activity-icon">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="activity-icon">
+                    <i class="fas fa-cog"></i>
+                </div>
+            </div>
+        </div>
+
+        <div id="sidebar-container"></div>
+
+        <div class="editor-container">
+            <div class="tabs">
+                <div class="tab" data-file="home" onclick="window.location.href='index.html';" style="cursor: pointer;">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </div>
+                <div class="tab active" data-file="privacy">
+                    <i class="fas fa-user-shield"></i>
+                    <span>privacy.md</span>
+                    <i class="fas fa-times" onclick="event.stopPropagation(); window.location.href='index.html';" style="cursor: pointer;"></i>
+                </div>
+            </div>
+
+            <div class="editor-content">
+                <div class="mission-content">
+                    <h1 class="page-title"><span class="gradient-text">Privacy Policy</span></h1>
+                    <p class="page-subtitle">Last updated: February 12, 2026</p>
+
+                    <section class="mission-content">
+                        <h2 class="section-header"><i class="fas fa-database"></i> Information We Collect</h2>
+                        <p>We collect contact details you provide (name, email, company, and project details) when you request a consultation or create an account.</p>
+                    </section>
+
+                    <section class="mission-content">
+                        <h2 class="section-header"><i class="fas fa-bolt"></i> How We Use Information</h2>
+                        <p>We use your information to respond to inquiries, deliver services, and communicate about your project. We do not sell your data.</p>
+                    </section>
+
+                    <section class="mission-content">
+                        <h2 class="section-header"><i class="fas fa-lock"></i> Data Protection</h2>
+                        <p>We apply reasonable security measures to protect your data. No system is 100% secure, so we cannot guarantee absolute security.</p>
+                    </section>
+
+                    <section class="mission-content">
+                        <h2 class="section-header"><i class="fas fa-share-alt"></i> Sharing</h2>
+                        <p>We may share information with trusted vendors only when required to deliver services (such as email or hosting providers).</p>
+                    </section>
+
+                    <section class="mission-content">
+                        <h2 class="section-header"><i class="fas fa-envelope"></i> Contact</h2>
+                        <p>Questions about privacy? Email us at founder.auctusventures@gmail.com.</p>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

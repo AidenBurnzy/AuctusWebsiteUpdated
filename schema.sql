@@ -13,10 +13,22 @@ CREATE TABLE IF NOT EXISTS users (
   locked_until TIMESTAMP
 );
 
+-- Create password reset tokens table
+CREATE TABLE IF NOT EXISTS password_resets (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  token_hash VARCHAR(255) UNIQUE NOT NULL,
+  expires_at TIMESTAMP NOT NULL,
+  used_at TIMESTAMP,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Create indexes for faster lookups
 CREATE INDEX IF NOT EXISTS idx_email ON users(email);
 CREATE INDEX IF NOT EXISTS idx_username ON users(username);
 CREATE INDEX IF NOT EXISTS idx_locked_until ON users(locked_until);
+CREATE INDEX IF NOT EXISTS idx_password_resets_user_id ON password_resets(user_id);
+CREATE INDEX IF NOT EXISTS idx_password_resets_expires_at ON password_resets(expires_at);
 
 -- Grant necessary permissions
 GRANT CONNECT ON DATABASE neondb TO postgres;

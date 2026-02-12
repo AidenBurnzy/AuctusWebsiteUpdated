@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms of Service - Auctus Studio</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="main-container">
+        <div class="activity-bar">
+            <div class="activity-icons">
+                <div class="activity-icon active" data-view="explorer">
+                    <i class="fas fa-folder"></i>
+                </div>
+                <div class="activity-icon" data-view="git">
+                    <i class="fas fa-code-branch"></i>
+                </div>
+                <div class="activity-icon" data-view="extensions">
+                    <i class="fas fa-th"></i>
+                </div>
+            </div>
+            <div class="activity-icons-bottom">
+                <div class="activity-icon">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="activity-icon">
+                    <i class="fas fa-cog"></i>
+                </div>
+            </div>
+        </div>
+
+        <div id="sidebar-container"></div>
+
+        <div class="editor-container">
+            <div class="tabs">
+                <div class="tab" data-file="home" onclick="window.location.href='index.html';" style="cursor: pointer;">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </div>
+                <div class="tab active" data-file="terms">
+                    <i class="fas fa-file-contract"></i>
+                    <span>terms.md</span>
+                    <i class="fas fa-times" onclick="event.stopPropagation(); window.location.href='index.html';" style="cursor: pointer;"></i>
+                </div>
+            </div>
+
+            <div class="editor-content">
+                <div class="mission-content">
+                    <h1 class="page-title"><span class="gradient-text">Terms of Service</span></h1>
+                    <p class="page-subtitle">Last updated: February 12, 2026</p>
+
+                    <section class="mission-content">
+                        <h2 class="section-header"><i class="fas fa-handshake"></i> Agreement</h2>
+                        <p>By accessing Auctus Studio services, you agree to these terms. If you do not agree, please do not use the site or request services.</p>
+                    </section>
+
+                    <section class="mission-content">
+                        <h2 class="section-header"><i class="fas fa-briefcase"></i> Services</h2>
+                        <p>We provide web design, development, AI automation, and related consulting. Scope, pricing, and timelines are defined in project proposals or statements of work.</p>
+                    </section>
+
+                    <section class="mission-content">
+                        <h2 class="section-header"><i class="fas fa-credit-card"></i> Payments</h2>
+                        <p>Invoices are due based on the schedule in your proposal. Late payments may pause delivery until balances are resolved.</p>
+                    </section>
+
+                    <section class="mission-content">
+                        <h2 class="section-header"><i class="fas fa-shield-alt"></i> Intellectual Property</h2>
+                        <p>Unless otherwise agreed in writing, you own final deliverables after full payment. Auctus Studio may showcase work in portfolios unless you request otherwise.</p>
+                    </section>
+
+                    <section class="mission-content">
+                        <h2 class="section-header"><i class="fas fa-exclamation-circle"></i> Limitation of Liability</h2>
+                        <p>We are not liable for indirect or consequential damages. Our total liability is limited to the fees paid for the specific project.</p>
+                    </section>
+
+                    <section class="mission-content">
+                        <h2 class="section-header"><i class="fas fa-envelope"></i> Contact</h2>
+                        <p>Questions? Email us at founder.auctusventures@gmail.com.</p>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

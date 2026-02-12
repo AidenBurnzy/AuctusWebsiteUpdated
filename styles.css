@@ -3581,9 +3581,15 @@ body {
 
 .oauth-buttons {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: 10px;
     margin-bottom: 20px;
+}
+
+.oauth-google-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
 }
 
 .oauth-button {
@@ -3627,7 +3633,7 @@ body {
     }
     
     .oauth-buttons {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr;
     }
 }
 
@@ -3888,6 +3894,20 @@ body {
     color: #ef4444;
     border: 1px solid rgba(239, 68, 68, 0.3);
     animation: slideInUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.form-message {
+    margin: 12px 0 8px;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.form-message.success {
+    color: #22c55e;
+}
+
+.form-message.error {
+    color: #ef4444;
 }
 
 .auth-benefits {
